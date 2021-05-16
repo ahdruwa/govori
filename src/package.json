@@ -11,8 +11,13 @@
   },
   "scripts": {
     "electron-rebuild": "node -r ../.erb/scripts/BabelRegister.js ../.erb/scripts/ElectronRebuild.js",
-    "postinstall": "yarn electron-rebuild"
+    "postinstall": "npm run electron-rebuild"
   },
   "license": "MIT",
-  "dependencies": {}
+  "dependencies": {
+    "socket.io-client": "^1.7.4"
+  },
+  "devDependencies": {
+    "@types/socket.io-client": "^1.4.36"
+  }
 }
