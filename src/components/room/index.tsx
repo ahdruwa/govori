@@ -13,7 +13,7 @@ import Controls from './controls';
 import RoomVideo from './room-video';
 import RoomVideoGrid from './room-video-grid';
 
-const Room = () => {
+const Room = (localStream) => {
 	const { socket, peerConnection } = useContext(WebSocketContext);
 
 	const users = useUsers();
@@ -59,14 +59,15 @@ const Room = () => {
 	}, [roomId, peerConnection, socket]);
 
 	const [needVideo, setNeedVideo] = useState(true);
-	const userOptions = useMemo(
-		() => ({
-			video: needVideo,
-		}),
-		[needVideo]
-	);
+	// const userOptions = useMemo(
+	// 	() => ({
+	// 		video: needVideo,
+	// 		audio: true,
+	// 	}),
+	// 	[needVideo]
+	// );
 
-	const [error, localVideo] = useLocalStream(userOptions);
+	// const [error, localVideo] = useLocalStream(userOptions);
 
 	return (
 		<Box height={1}>
@@ -75,7 +76,7 @@ const Room = () => {
 					<Paper>Номер этой комнаты: {roomId}</Paper>
 				</Grid>
 				<RoomVideoGrid>
-					<RoomVideo stream={localVideo} />
+					<RoomVideo stream={localStream} />
 				</RoomVideoGrid>
 				<Grid item xs={12}>
 					<Controls
