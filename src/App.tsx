@@ -63,13 +63,6 @@ const Hello = () => {
 				console.error('Error adding received ice candidate', e);
 			}
 		});
-		peerConnection?.addEventListener('connectionstatechange', (event) => {
-			console.log(event);
-
-			if (peerConnection.connectionState === 'connected') {
-				console.log('CONNECTED');
-			}
-		});
 	}, [userList, peerConnection, socket]);
 
 	return (

@@ -2,8 +2,8 @@ import { WSAEACCES } from 'constants';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { WebSocketContext } from '../../websocket-context';
 
-const onAnswerMade: OnAnswerMadeFunction = (data, peerConnection) => {
-	peerConnection.setRemoteDescription(new RTCSessionDescription(data.answer));
+const onAnswerMade: OnAnswerMadeFunction = async (data, peerConnection) => {
+	await peerConnection.setRemoteDescription(new RTCSessionDescription(data.answer));
 };
 
 const answerMadeListener = (
@@ -11,7 +11,7 @@ const answerMadeListener = (
 	peerConnection: RTCPeerConnection,
 	onConnect: React.Dispatch<React.SetStateAction<boolean>>
 ) => {
-	socket.on('answer-made', (data: AnswerMadeServerMessageDTO) => {
+	socket.on('answer-made', async (data: AnswerMadeServerMessageDTO) => {
 		onAnswerMade(data, peerConnection);
 		onConnect(true);
 	});

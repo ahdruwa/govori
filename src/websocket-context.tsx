@@ -24,7 +24,9 @@ const WebSocketContextProvider = ({ children }: Props) => {
 	const ws = useMemo(
 		() => ({
 			socket: io('ws://192.168.0.100:3000/signalization'),
-			peerConnection: new window.RTCPeerConnection(),
+			peerConnection: new window.RTCPeerConnection({
+				iceServers: [{ urls: 'stun:stun.l.google.com:19302' }],
+			}),
 		}),
 		[]
 	);
@@ -49,6 +51,16 @@ const WebSocketContextProvider = ({ children }: Props) => {
 			},
 			(error) => {
 				console.warn(error.message);
+			}
+		);
+		ws.peerConnection?.addEventListener(
+			'connectionstatechange',
+			(event) => {
+				console.log(event);
+
+				if (ws.peerConnection.connectionState === 'connected') {
+					console.log('CONNECTED');
+				}
 			}
 		);
 	}, []);
