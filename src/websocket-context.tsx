@@ -34,24 +34,6 @@ const WebSocketContextProvider = ({ children }: Props) => {
 	const video = useRef();
 
 	useEffect(() => {
-		navigator.getUserMedia(
-			{ video: true, audio: true },
-			(stream) => {
-				// const localVideo = document.getElementById('local-video');
-				// if (localVideo) {
-				// video.current.srcObject = stream;
-				// }
-
-				// video.current.srcObject = stream;
-
-				stream.getTracks().forEach((track) => {
-					ws.peerConnection.addTrack(track, stream);
-				});
-			},
-			(error) => {
-				console.warn(error.message);
-			}
-		);
 		ws.peerConnection?.addEventListener(
 			'connectionstatechange',
 			(event) => {
@@ -62,6 +44,10 @@ const WebSocketContextProvider = ({ children }: Props) => {
 				}
 			}
 		);
+		ws.socket.on('call-made', () => {
+			console.log(3222);
+
+		})
 	}, []);
 
 	return (

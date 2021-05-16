@@ -3,19 +3,17 @@ import { WebSocketContext } from '../../websocket-context';
 
 const useRTCtrack = () => {
 	const { socket, peerConnection } = useContext(WebSocketContext);
-	const [stream, setStream] = useState(new MediaStream());
+	const [streamsRTC, setStream] = useState<readonly MediaStream[]>([
+		new MediaStream(),
+	]);
 
 	useEffect(() => {
-		peerConnection?.addEventListener(
-			'track',
-			({ streams: [RTCStream] }) => {
-				console.log(1);
-				setStream(RTCStream);
-			}
-		);
+		peerConnection?.addEventListener('track', ({ streams }) => {
+			setStream(streams);
+		});
 	}, [peerConnection]);
 
-	return stream;
+	return streamsRTC;
 };
 
 export default useRTCtrack;

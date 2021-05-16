@@ -57,6 +57,8 @@ const useCallMadeListener: () => [
 	useEffect(() => {
 		if (socket && peerConnection) {
 			callMadeListener(socket, (callData: CallMadeServerMessageDTO) => {
+				console.log(999);
+
 				setCall(true);
 				setData(callData);
 			});

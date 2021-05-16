@@ -18,6 +18,9 @@ interface AnswerMadeServerMessageDTO extends CommonServerMessageDTO {
 	answer: RTCSessionDescriptionInit;
 }
 
+interface CreateRoomDTO {
+	roomId: string;
+}
 interface UserListDTO {
 	users: string[];
 }
