@@ -46,7 +46,6 @@ const WebSocketContextProvider = ({ children }: Props) => {
 
 				stream.getTracks().forEach((track) => {
 					ws.peerConnection.addTrack(track, stream);
-					console.log(track, 'ws.peerConnection');
 				});
 			},
 			(error) => {

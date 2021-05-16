@@ -4,6 +4,7 @@ import { WebSocketContext } from '../../websocket-context';
 
 const onAnswerMade: OnAnswerMadeFunction = async (data, peerConnection) => {
 	await peerConnection.setRemoteDescription(new RTCSessionDescription(data.answer));
+	console.log(peerConnection, 2);
 };
 
 const answerMadeListener = (

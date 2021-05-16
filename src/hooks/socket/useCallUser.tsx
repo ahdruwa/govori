@@ -10,6 +10,8 @@ const callUser: CallUserFunction = (roomId, socket, peerConnection) => {
 				new RTCSessionDescription(offer)
 			);
 
+			console.log(peerConnection, 1);
+
 			const payload = {
 				destination: roomId,
 				offer,
@@ -17,14 +19,14 @@ const callUser: CallUserFunction = (roomId, socket, peerConnection) => {
 
 			if (socket) {
 				socket.emit('call-user', payload);
-				peerConnection.onicecandidate = (e) => {
-					console.log(peerConnection, e);
+				// peerConnection.onicecandidate = (e) => {
+				// 	console.log(peerConnection, e);
 
-					socket.emit('ice-candidate', {
-						destination: roomId,
-						iceCandidate: e.candidate,
-					});
-				};
+				// 	socket.emit('ice-candidate', {
+				// 		destination: roomId,
+				// 		iceCandidate: e.candidate,
+				// 	});
+				// };
 			}
 
 			return offer;

@@ -5,8 +5,12 @@ const callAccept: CallAcceptFunction = async (data, socket, peerConnection) => {
 	await peerConnection.setRemoteDescription(
 		new RTCSessionDescription(data.offer)
 	);
+	console.log('call-accept-rd', peerConnection);
+
 	const answer = await peerConnection.createAnswer();
 	await peerConnection.setLocalDescription(new RTCSessionDescription(answer));
+
+	console.log(peerConnection, 'peer-connection-ld');
 
 	if (socket) {
 		socket.emit('make-answer', {

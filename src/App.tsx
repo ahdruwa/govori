@@ -30,18 +30,12 @@ const Hello = () => {
 	const stream = useRTCtrack();
 
 	useEffect(() => {
-		console.log(stream);
-
 		video.current.srcObject = stream;
 	}, [stream]);
 
 	useEffect(() => {
 		peerConnection.onicecandidate = (e) => {
-			console.log(userList[0]);
-
 			if (!e.candidate) return;
-
-			console.log(e.candidate, 2);
 
 			socket?.on('answer-made', () => {
 				socket?.emit('ice-candidate', {
@@ -52,8 +46,6 @@ const Hello = () => {
 		};
 		socket?.on('ice-candidate', async ({ iceCandidate }) => {
 			if (!iceCandidate) return;
-
-			console.log(iceCandidate, 1);
 
 			try {
 				await peerConnection?.addIceCandidate(
