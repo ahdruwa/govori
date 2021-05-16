@@ -10,6 +10,11 @@ const newUserListener = (
 		await peerConnection.setRemoteDescription(
 			new RTCSessionDescription(answer)
 		);
+
+		console.log({
+			peerConnection,
+		});
+
 		setUsers(user);
 	});
 };

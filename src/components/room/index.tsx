@@ -6,14 +6,47 @@ import useCallUser from '../../hooks/socket/useCallUser';
 
 import useLocalStream from '../../hooks/socket/useLocalStream';
 import useRoomCreate from '../../hooks/socket/useRoomCreate';
+import useRTCtrack from '../../hooks/socket/useRTCtrack';
 import useUsers from '../../hooks/socket/useUsers';
+import { WebSocketContext } from '../../websocket-context';
 import Controls from './controls';
 import RoomVideo from './room-video';
 import RoomVideoGrid from './room-video-grid';
 
 const Room = () => {
+	const { socket, peerConnection } = useContext(WebSocketContext);
+
 	const users = useUsers();
 	const { roomId } = useParams();
+	const streams = useRTCtrack();
+
+	console.log({
+		users,
+	});
+
+	useEffect(() => {
+		peerConnection.onicecandidate = (e) => {
+			if (!e.candidate) return;
+
+			socket?.on('new-user', () => {
+				socket?.emit('ice-candidate', {
+					roomId,
+					iceCandidate: e.candidate,
+				});
+			});
+		};
+		socket?.on('ice-candidate', async ({ iceCandidate }) => {
+			if (!iceCandidate) return;
+
+			try {
+				await peerConnection?.addIceCandidate(
+					new RTCIceCandidate(iceCandidate)
+				);
+			} catch (e) {
+				console.error('Error adding received ice candidate', e);
+			}
+		});
+	}, [roomId, peerConnection, socket]);
 
 	const [needVideo, setNeedVideo] = useState(false);
 	const userOptions = useMemo(
