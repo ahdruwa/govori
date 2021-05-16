@@ -25,10 +25,15 @@ const Room = () => {
 	});
 
 	useEffect(() => {
+		window.pc = peerConnection;
 		peerConnection.onicecandidate = (e) => {
 			if (!e.candidate) return;
 
 			socket?.on('new-user', () => {
+				console.log({
+					candidate: e.candidate,
+				});
+
 				socket?.emit('ice-candidate', {
 					roomId,
 					iceCandidate: e.candidate,
@@ -39,6 +44,10 @@ const Room = () => {
 			if (!iceCandidate) return;
 
 			try {
+				console.log({
+					candidate: iceCandidate,
+				});
+
 				await peerConnection?.addIceCandidate(
 					new RTCIceCandidate(iceCandidate)
 				);
@@ -48,7 +57,7 @@ const Room = () => {
 		});
 	}, [roomId, peerConnection, socket]);
 
-	const [needVideo, setNeedVideo] = useState(false);
+	const [needVideo, setNeedVideo] = useState(true);
 	const userOptions = useMemo(
 		() => ({
 			video: needVideo,

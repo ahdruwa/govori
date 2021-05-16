@@ -12,7 +12,7 @@ const newUserListener = (
 		);
 
 		console.log({
-			peerConnection,
+			answer,
 		});
 
 		setUsers(user);
@@ -30,6 +30,7 @@ const useUsers = () => {
 
 		newUserListener(socket, peerConnection, (user) => {
 			users.push(user);
+			setUsers(users);
 		});
 	}, [peerConnection, socket]);
 

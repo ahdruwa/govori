@@ -44,10 +44,6 @@ const WebSocketContextProvider = ({ children }: Props) => {
 				}
 			}
 		);
-		ws.socket.on('call-made', () => {
-			console.log(3222);
-
-		})
 	}, []);
 
 	return (

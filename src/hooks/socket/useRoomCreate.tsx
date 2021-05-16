@@ -6,10 +6,11 @@ const roomCreationListener = (
 	socket: SocketIOClient.Socket,
 	setRoomId: React.Dispatch<React.SetStateAction<string>>
 ) => {
-	console.log(Date.now());
-
 	socket.on('room-created', (data: any) => {
 		const { roomId } = data;
+
+		console.log('room-created');
+
 
 		setRoomId(roomId);
 	});
@@ -21,6 +22,8 @@ const createRoom = async (
 ) => {
 	const offer = await peerConnection.createOffer();
 	await peerConnection.setLocalDescription(new RTCSessionDescription(offer));
+
+	console.log(offer);
 
 	socket.emit('create-room', {
 		offer,

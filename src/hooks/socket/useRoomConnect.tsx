@@ -15,6 +15,11 @@ const roomConnectAcceptedListener = (
 		const answer = await peerConnection.createAnswer();
 		await peerConnection.setLocalDescription(answer);
 
+		console.log({
+			offer,
+			answer,
+		});
+
 		socket.emit('room-connect--accepted', {
 			roomId,
 			answer,
