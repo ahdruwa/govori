@@ -3,16 +3,24 @@ import React, {
 	useCallback,
 	useContext,
 	useEffect,
+	useMemo,
 	useRef,
 	useState,
 } from 'react';
-import { HashRouter as Router, Switch, Route, Link, NavLink } from 'react-router-dom';
+import {
+	HashRouter as Router,
+	Switch,
+	Route,
+	Link,
+	NavLink,
+} from 'react-router-dom';
 
 import Room from './components/room';
 import RoomPicker from './components/roomPicker';
 import useAnswerlMadeListener from './hooks/socket/useAnswerMade';
 import useCallMadeListener from './hooks/socket/useCallMade';
 import useCallUser from './hooks/socket/useCallUser';
+import useLocalStream from './hooks/socket/useLocalStream';
 import useRoomCreate from './hooks/socket/useRoomCreate';
 import useRTCtrack from './hooks/socket/useRTCtrack';
 import useUserList from './hooks/socket/useUserList';
@@ -25,6 +33,14 @@ const usePizdec = () => {
 };
 
 const Hello = () => {
+	const opts = useMemo(
+		() => ({
+			video: true,
+			audio: true,
+		}),
+		[]
+	);
+	useLocalStream(opts);
 	// const userList = useUserList();
 	// const video = useRef();
 	// const { socket, peerConnection } = useContext(WebSocketContext);

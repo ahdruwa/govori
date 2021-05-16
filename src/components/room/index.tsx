@@ -26,6 +26,7 @@ const Room = () => {
 
 	useEffect(() => {
 		window.pc = peerConnection;
+
 		peerConnection.onicecandidate = (e) => {
 			if (!e.candidate) return;
 

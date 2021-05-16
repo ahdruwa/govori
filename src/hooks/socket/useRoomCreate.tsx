@@ -11,7 +11,6 @@ const roomCreationListener = (
 
 		console.log('room-created');
 
-
 		setRoomId(roomId);
 	});
 };
