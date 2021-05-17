@@ -20,9 +20,22 @@ const Room = (localStream) => {
 	const { roomId } = useParams();
 	const streams = useRTCtrack();
 
+	const [needVideo, setNeedVideo] = useState(true);
+	const userOptions = useMemo(
+		() => ({
+			video: needVideo,
+			audio: true,
+		}),
+		[needVideo]
+	);
+	const [error, localVideo] = useLocalStream(userOptions);
 	console.log({
 		users,
 	});
+
+	peerConnection.ontrack = () => {
+		console.log(777777);
+	}
 
 	peerConnection.onicecandidate = (e) => {
 		if (!e.candidate) return;
@@ -51,16 +64,6 @@ const Room = (localStream) => {
 			console.error('Error adding received ice candidate', e);
 		}
 	});
-	const [needVideo, setNeedVideo] = useState(true);
-	const userOptions = useMemo(
-		() => ({
-			video: needVideo,
-			audio: true,
-		}),
-		[needVideo]
-	);
-
-	const [error, localVideo] = useLocalStream(userOptions);
 
 	return (
 		<Box height={1}>
