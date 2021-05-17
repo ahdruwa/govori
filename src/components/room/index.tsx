@@ -24,50 +24,43 @@ const Room = (localStream) => {
 		users,
 	});
 
-	useEffect(() => {
-		window.pc = peerConnection;
+	peerConnection.onicecandidate = (e) => {
+		if (!e.candidate) return;
 
-		peerConnection.onicecandidate = (e) => {
-			if (!e.candidate) return;
-
-			socket?.on('new-user', () => {
-				console.log({
-					candidate: e.candidate,
-				});
-
-				socket?.emit('ice-candidate', {
-					roomId,
-					iceCandidate: e.candidate,
-				});
-			});
-		};
-		socket?.on('ice-candidate', async ({ iceCandidate }) => {
-			if (!iceCandidate) return;
-
-			try {
-				console.log({
-					candidate: iceCandidate,
-				});
-
-				await peerConnection?.addIceCandidate(
-					new RTCIceCandidate(iceCandidate)
-				);
-			} catch (e) {
-				console.error('Error adding received ice candidate', e);
-			}
+		console.log({
+			candidate: e.candidate,
 		});
-	}, [roomId, peerConnection, socket]);
 
+		socket?.emit('ice-candidate', {
+			roomId,
+			iceCandidate: e.candidate,
+		});
+	};
+	socket?.on('ice-candidate', async ({ iceCandidate }) => {
+		if (!iceCandidate) return;
+
+		try {
+			console.log({
+				candidate: iceCandidate,
+			});
+
+			await peerConnection?.addIceCandidate(
+				new RTCIceCandidate(iceCandidate)
+			);
+		} catch (e) {
+			console.error('Error adding received ice candidate', e);
+		}
+	});
 	const [needVideo, setNeedVideo] = useState(true);
-	// const userOptions = useMemo(
-	// 	() => ({
-	// 		video: needVideo,
-	// 		audio: true,
-	// 	}),
-	// 	[needVideo]
-	// );
+	const userOptions = useMemo(
+		() => ({
+			video: needVideo,
+			audio: true,
+		}),
+		[needVideo]
+	);
 
-	// const [error, localVideo] = useLocalStream(userOptions);
+	const [error, localVideo] = useLocalStream(userOptions);
 
 	return (
 		<Box height={1}>
@@ -76,7 +69,10 @@ const Room = (localStream) => {
 					<Paper>Номер этой комнаты: {roomId}</Paper>
 				</Grid>
 				<RoomVideoGrid>
-					<RoomVideo stream={localStream} />
+					<RoomVideo stream={localVideo} />
+					{streams.map((stream) => {
+						return <RoomVideo stream={stream} />;
+					})}
 				</RoomVideoGrid>
 				<Grid item xs={12}>
 					<Controls

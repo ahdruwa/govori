@@ -23,7 +23,7 @@ export { WebSocketContext };
 const WebSocketContextProvider = ({ children }: Props) => {
 	const ws = useMemo(
 		() => ({
-			socket: io('ws://192.168.0.100:3000/signalization'),
+			socket: io('https://govori-backend.herokuapp.com/signalization'),
 			peerConnection: new window.RTCPeerConnection({
 				iceServers: [{ urls: 'stun:stun.l.google.com:19302' }],
 			}),
