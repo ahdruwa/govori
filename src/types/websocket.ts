@@ -31,4 +31,5 @@ type OnAnswerMadeFunction = (
 type WebSocketEntity = {
 	socket: SocketIOClient.Socket | undefined;
 	peerConnection: RTCPeerConnection | undefined;
+	dataChannel: RTCDataChannel | undefined;
 };

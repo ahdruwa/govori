@@ -14,6 +14,7 @@ type Props = {
 const defaultWS = {
 	socket: undefined,
 	peerConnection: undefined,
+	dataChannel: undefined,
 };
 
 const WebSocketContext = createContext<WebSocketEntity>(defaultWS);
@@ -21,19 +22,23 @@ const WebSocketContext = createContext<WebSocketEntity>(defaultWS);
 export { WebSocketContext };
 
 const WebSocketContextProvider = ({ children }: Props) => {
+	const peerConnection = useMemo(() => new window.RTCPeerConnection(), []);
 	const ws = useMemo(
 		() => ({
-			socket: io('https://govori-backend.herokuapp.com/signalization'),
-			peerConnection: new window.RTCPeerConnection({
-				iceServers: [{ urls: 'stun:stun.l.google.com:19302' }],
-			}),
+			socket: io('ws://localhost:3000/signalization'),
+			peerConnection,
+			dataChannel: peerConnection.createDataChannel('ConnectionState'),
 		}),
 		[]
 	);
 
-	const video = useRef();
-
 	useEffect(() => {
+		setInterval(async () => {
+			const stats = await ws.peerConnection.getStats();
+
+			stats.forEach((stat) => console.log(stat));
+		}, 10000);
+
 		ws.peerConnection?.addEventListener(
 			'connectionstatechange',
 			(event) => {
@@ -41,6 +46,7 @@ const WebSocketContextProvider = ({ children }: Props) => {
 
 				if (ws.peerConnection.connectionState === 'connected') {
 					console.log('CONNECTED');
+					ws.dataChannel.send('connected');
 				}
 			}
 		);

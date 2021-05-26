@@ -25,6 +25,8 @@ const useLocalStream: (
 				setStream(mediaStream);
 
 				mediaStream.getTracks().forEach((track) => {
+					console.log(track, 888);
+
 					peerConnection?.addTrack(track, mediaStream);
 				});
 

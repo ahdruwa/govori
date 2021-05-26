@@ -4,12 +4,15 @@ import { WebSocketContext } from '../../websocket-context';
 
 const roomCreationListener = (
 	socket: SocketIOClient.Socket,
+	peerConnection: RTCPeerConnection,
 	setRoomId: React.Dispatch<React.SetStateAction<string>>
 ) => {
-	socket.on('room-created', (data: any) => {
-		const { roomId } = data;
+	socket.on('room-created', async (data: any) => {
+		const { roomId, answer } = data;
 
-		console.log('room-created');
+		await peerConnection.setRemoteDescription(answer);
+
+		console.log(peerConnection);
 
 		setRoomId(roomId);
 	});
@@ -19,10 +22,11 @@ const createRoom = async (
 	socket: SocketIOClient.Socket,
 	peerConnection: RTCPeerConnection
 ) => {
-	const offer = await peerConnection.createOffer();
+	const offer = await peerConnection.createOffer({
+		offerToReceiveAudio: true,
+        offerToReceiveVideo: true,
+	});
 	await peerConnection.setLocalDescription(new RTCSessionDescription(offer));
-
-	console.log(offer);
 
 	socket.emit('create-room', {
 		offer,
@@ -32,12 +36,16 @@ const createRoom = async (
 type RoomCreate = () => void;
 
 const useRoomCreate = () => {
-	const { socket, peerConnection } = useContext(WebSocketContext);
-	// const [roomCreateState, setRoomCreate] = useState<RoomCreate>(() => {});
+	const { socket, peerConnection } =
+		useContext(WebSocketContext);
 	const history = useHistory();
 
 	const roomCreate = () => {
-		roomCreationListener(socket, (roomId) => {
+		if (!(socket && peerConnection)) {
+			throw new Error('miss context');
+		}
+
+		roomCreationListener(socket, peerConnection, (roomId) => {
 			history.push(`/room/${roomId}`);
 		});
 		createRoom(socket, peerConnection);

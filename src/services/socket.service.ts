@@ -10,6 +10,10 @@ export default class SocketService {
 		);
 	}
 
+	createRoom(): void {
+		this.socket.emit('create-room');
+	}
+
 	answerMadeListener(
 		onConnect: React.Dispatch<React.SetStateAction<boolean>>
 	) {

@@ -33,10 +33,6 @@ const Room = (localStream) => {
 		users,
 	});
 
-	peerConnection.ontrack = () => {
-		console.log(777777);
-	}
-
 	peerConnection.onicecandidate = (e) => {
 		if (!e.candidate) return;
 
@@ -50,14 +46,14 @@ const Room = (localStream) => {
 		});
 	};
 	socket?.on('ice-candidate', async ({ iceCandidate }) => {
-		if (!iceCandidate) return;
+		if (!iceCandidate || users.length) return;
 
 		try {
 			console.log({
 				candidate: iceCandidate,
 			});
 
-			await peerConnection?.addIceCandidate(
+			await peerConnection.addIceCandidate(
 				new RTCIceCandidate(iceCandidate)
 			);
 		} catch (e) {

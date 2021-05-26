@@ -38,6 +38,22 @@ if (
 	require('electron-debug')();
 }
 
+// // Move the mouse across the screen as a sine wave.
+// import robot from 'robotjs'
+
+// // Speed up the mouse.
+// robot.setMouseDelay(2);
+
+// const twoPI = Math.PI * 2.0;
+// const screenSize = robot.getScreenSize();
+// const height = screenSize.height / 2 - 10;
+// const { width } = screenSize;
+
+// for (let x = 0; x < width; x++) {
+// 	const y = height * Math.sin((twoPI * x) / width) + height;
+// 	console.log(robot.mouseClick('left'));
+// }
+
 const installExtensions = async () => {
 	const installer = require('electron-devtools-installer');
 	const forceDownload = !!process.env.UPGRADE_EXTENSIONS;

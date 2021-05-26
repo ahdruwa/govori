@@ -7,6 +7,8 @@ const useRTCtrack = () => {
 		new MediaStream(),
 	]);
 
+	console.log(999);
+
 	useEffect(() => {
 		peerConnection?.addEventListener('track', ({ streams }) => {
 			console.log(streams, peerConnection);

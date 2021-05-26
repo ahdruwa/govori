@@ -7,31 +7,26 @@ const roomConnectAcceptedListener = (
 	peerConnection: RTCPeerConnection,
 	onAccept: () => void
 ) => {
-	socket.on('room-connect--accepted', async ({ offer, roomId }) => {
+	socket.on('room-connect--accepted', async ({ answer, roomId }) => {
 		await peerConnection.setRemoteDescription(
-			new RTCSessionDescription(offer)
+			new RTCSessionDescription(answer)
 		);
-
-		const answer = await peerConnection.createAnswer();
-		await peerConnection.setLocalDescription(answer);
-
-		console.log({
-			offer,
-			answer,
-		});
-
-		socket.emit('room-connect--accepted', {
-			roomId,
-			answer,
-		});
 
 		onAccept();
 	});
 };
 
-const connectRoom = async (roomId: string, socket: SocketIOClient.Socket) => {
+const connectRoom = async (
+	roomId: string,
+	socket: SocketIOClient.Socket,
+	peerConnection: RTCPeerConnection
+) => {
+	const offer = await peerConnection.createOffer();
+	await peerConnection.setLocalDescription(new RTCSessionDescription(offer));
+
 	socket.emit('room-connect', {
 		roomId,
+		offer,
 	});
 };
 
@@ -48,7 +43,7 @@ const useConnectRoom = (roomId: string) => {
 			history.push(`/room/${roomId}`);
 		});
 
-		connectRoom(roomId, socket);
+		connectRoom(roomId, socket, peerConnection);
 	};
 
 	return roomConnect;
