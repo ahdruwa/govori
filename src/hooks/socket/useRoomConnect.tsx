@@ -21,7 +21,10 @@ const connectRoom = async (
 	socket: SocketIOClient.Socket,
 	peerConnection: RTCPeerConnection
 ) => {
-	const offer = await peerConnection.createOffer();
+	const offer = await peerConnection.createOffer({
+		offerToReceiveVideo: true,
+		offerToReceiveAudio: true,
+	});
 	await peerConnection.setLocalDescription(new RTCSessionDescription(offer));
 
 	socket.emit('room-connect', {

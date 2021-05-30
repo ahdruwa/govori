@@ -28,6 +28,7 @@ const useLocalStream: (
 					console.log(track, 888);
 
 					peerConnection?.addTrack(track, mediaStream);
+					peerConnection.addTransceiver("video");
 				});
 
 				return mediaStream;

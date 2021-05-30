@@ -60,6 +60,8 @@ const Room = (localStream) => {
 			console.error('Error adding received ice candidate', e);
 		}
 	});
+	// peerConnection.ontrack = () => console.log(101010);
+
 
 	return (
 		<Box height={1}>

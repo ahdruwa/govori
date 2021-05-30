@@ -33,11 +33,25 @@ const WebSocketContextProvider = ({ children }: Props) => {
 	);
 
 	useEffect(() => {
-		setInterval(async () => {
-			const stats = await ws.peerConnection.getStats();
+		// setInterval(async () => {
+		// 	const stats = await ws.peerConnection.getStats();
 
-			stats.forEach((stat) => console.log(stat));
-		}, 10000);
+		// 	stats.forEach((stat) => console.log(stat));
+		// }, 10000);
+
+		peerConnection.onnegotiationneeded = async () => {
+			const offer = await peerConnection.createOffer();
+			peerConnection.setLocalDescription(offer);
+
+			ws.socket.emit('negotiation', {
+				offer,
+			});
+			ws.socket.on('negotiation', ({ answer }) => {
+				console.log(answer);
+				peerConnection.setRemoteDescription(answer);
+			});
+		};
+
 
 		ws.peerConnection?.addEventListener(
 			'connectionstatechange',
