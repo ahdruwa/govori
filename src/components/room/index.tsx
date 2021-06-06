@@ -24,7 +24,7 @@ const Room = (localStream) => {
 	const userOptions = useMemo(
 		() => ({
 			video: needVideo,
-			audio: true,
+			audio: false,
 		}),
 		[needVideo]
 	);
@@ -72,7 +72,7 @@ const Room = (localStream) => {
 				<RoomVideoGrid>
 					<RoomVideo stream={localVideo} />
 					{streams.map((stream) => {
-						return <RoomVideo stream={stream} />;
+						return <RoomVideo stream={stream} key={stream.id} />;
 					})}
 				</RoomVideoGrid>
 				<Grid item xs={12}>

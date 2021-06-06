@@ -41,7 +41,7 @@ const Hello = () => {
 		}),
 		[]
 	);
-	const [e, localStream] = useLocalStream(opts);
+	// const [e, localStream] = useLocalStream(opts);
 	// const userList = useUserList();
 	// const video = useRef();
 	// const { socket, peerConnection } = useContext(WebSocketContext);

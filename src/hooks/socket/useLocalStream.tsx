@@ -11,7 +11,7 @@ const useLocalStream: (
 	useEffect(() => {
 		if (!userOptions.video) {
 			stream.getVideoTracks().forEach((track) => {
-				stream.removeTrack(track);
+				track.stop();
 			});
 
 			setStream(new MediaStream());
@@ -20,15 +20,15 @@ const useLocalStream: (
 		}
 
 		navigator.mediaDevices
-			.getUserMedia({ video: userOptions.video })
+			.getUserMedia({
+				video: userOptions.video,
+				audio: true,
+			})
 			.then((mediaStream) => {
 				setStream(mediaStream);
 
 				mediaStream.getTracks().forEach((track) => {
-					console.log(track, 888);
-
 					peerConnection?.addTrack(track, mediaStream);
-					peerConnection.addTransceiver("video");
 				});
 
 				return mediaStream;

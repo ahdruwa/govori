@@ -46,12 +46,24 @@ const WebSocketContextProvider = ({ children }: Props) => {
 			ws.socket.emit('negotiation', {
 				offer,
 			});
-			ws.socket.on('negotiation', ({ answer }) => {
-				console.log(answer);
-				peerConnection.setRemoteDescription(answer);
-			});
 		};
 
+		ws.socket.on('negotiation', ({ answer }) => {
+			console.log(answer);
+			peerConnection.setRemoteDescription(answer);
+		});
+
+		ws.socket.on('negotiation-need', async ({ offer }) => {
+			await peerConnection.setRemoteDescription(offer);
+
+			const answer = await peerConnection.createAnswer();
+
+			peerConnection.setLocalDescription(answer);
+
+			ws.socket.emit('negotiation-accept', {
+				answer,
+			});
+		});
 
 		ws.peerConnection?.addEventListener(
 			'connectionstatechange',
