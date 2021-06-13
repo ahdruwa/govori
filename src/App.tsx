@@ -18,6 +18,7 @@ import robot from 'robotjs';
 
 import Room from './components/room';
 import RoomPicker from './components/roomPicker';
+import Settings from './components/settings';
 import useAnswerlMadeListener from './hooks/socket/useAnswerMade';
 import useCallMadeListener from './hooks/socket/useCallMade';
 import useCallUser from './hooks/socket/useCallUser';
@@ -65,6 +66,9 @@ const Hello = () => {
 			<NavLink to="/connection">
 				<Button>Подключится к комнате</Button>
 			</NavLink>
+			<NavLink to="/settings">
+				<Button>Настройки</Button>
+			</NavLink>
 		</Grid>
 	);
 };
@@ -76,6 +80,7 @@ export default function App() {
 				<Route path="/" exact component={Hello} />
 				<Route path="/room/:roomId" component={Room} />
 				<Route path="/connection" component={RoomPicker} />
+				<Route path="/settings" component={Settings} />
 			</Switch>
 		</Router>
 	);

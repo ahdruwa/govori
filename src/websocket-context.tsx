@@ -74,6 +74,14 @@ const WebSocketContextProvider = ({ children }: Props) => {
 					console.log('CONNECTED');
 					ws.dataChannel.send('connected');
 				}
+
+				if (
+					ws.peerConnection.connectionState === 'disconnected' ||
+					ws.peerConnection.connectionState === 'failed'
+				) {
+					console.log('Disconnected');
+					ws.socket.emit('disconnect');
+				}
 			}
 		);
 	}, []);

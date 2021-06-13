@@ -19,28 +19,35 @@ const roomCreationListener = (
 };
 
 const createRoom = async (
+	nickname: string,
 	socket: SocketIOClient.Socket,
 	peerConnection: RTCPeerConnection
 ) => {
 	const offer = await peerConnection.createOffer({
 		offerToReceiveAudio: true,
-        offerToReceiveVideo: true,
+		offerToReceiveVideo: true,
 	});
 	await peerConnection.setLocalDescription(new RTCSessionDescription(offer));
 
 	socket.emit('create-room', {
 		offer,
+		nickname,
 	});
 };
 
 type RoomCreate = () => void;
 
 const useRoomCreate = () => {
-	const { socket, peerConnection } =
-		useContext(WebSocketContext);
+	const { socket, peerConnection } = useContext(WebSocketContext);
 	const history = useHistory();
 
 	const roomCreate = () => {
+		const nickname = localStorage.getItem('nickname');
+
+		if (!nickname) {
+			return Error('Enter nickname!');
+		}
+
 		if (!(socket && peerConnection)) {
 			throw new Error('miss context');
 		}
@@ -48,7 +55,7 @@ const useRoomCreate = () => {
 		roomCreationListener(socket, peerConnection, (roomId) => {
 			history.push(`/room/${roomId}`);
 		});
-		createRoom(socket, peerConnection);
+		createRoom(nickname, socket, peerConnection);
 	};
 
 	return roomCreate;

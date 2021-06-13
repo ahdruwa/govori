@@ -17,6 +17,7 @@ const roomConnectAcceptedListener = (
 };
 
 const connectRoom = async (
+	nickname: string,
 	roomId: string,
 	socket: SocketIOClient.Socket,
 	peerConnection: RTCPeerConnection
@@ -30,6 +31,7 @@ const connectRoom = async (
 	socket.emit('room-connect', {
 		roomId,
 		offer,
+		nickname,
 	});
 };
 
@@ -38,6 +40,12 @@ const useConnectRoom = (roomId: string) => {
 	const history = useHistory();
 
 	const roomConnect = () => {
+		const nickname = localStorage.getItem('nickname');
+
+		if (!nickname) {
+			return Error('Enter nickname!');
+		}
+
 		if (!socket || !peerConnection) {
 			throw new Error('miss context');
 		}
@@ -46,7 +54,7 @@ const useConnectRoom = (roomId: string) => {
 			history.push(`/room/${roomId}`);
 		});
 
-		connectRoom(roomId, socket, peerConnection);
+		connectRoom(nickname, roomId, socket, peerConnection);
 	};
 
 	return roomConnect;
