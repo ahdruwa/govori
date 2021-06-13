@@ -45,24 +45,20 @@ const Room = (localStream) => {
 			iceCandidate: e.candidate,
 		});
 	};
-	socket?.on('ice-candidate', async ({ iceCandidate }) => {
-		if (!iceCandidate || users.length) return;
+	useEffect(() => {
+		socket?.on('ice-candidate', async ({ iceCandidate }) => {
+			if (!iceCandidate || users.length) return;
 
-		try {
-			console.log({
-				candidate: iceCandidate,
-			});
-
-			await peerConnection.addIceCandidate(
-				new RTCIceCandidate(iceCandidate)
-			);
-		} catch (e) {
-			console.error('Error adding received ice candidate', e);
-		}
-	});
+			try {
+				await peerConnection.addIceCandidate(
+					new RTCIceCandidate(iceCandidate)
+				);
+			} catch (e) {
+				console.error('Error adding received ice candidate', e);
+			}
+		});
+	}, []);
 	// peerConnection.ontrack = () => console.log(101010);
-
-
 	return (
 		<Box height={1}>
 			<Grid container>

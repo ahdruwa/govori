@@ -20,6 +20,8 @@ const RoomVideo = ({ children }: Props) => {
 		children?.forEach((node) => {
 			row.push(node);
 
+			console.log(row.length > rows.length + 1);
+
 			if (row.length > rows.length + 1) {
 				rows.push(row);
 				row = [];
