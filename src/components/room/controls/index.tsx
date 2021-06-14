@@ -5,7 +5,7 @@ import React, { memo, useEffect, useRef } from 'react';
 
 import useIconStyles from './styles/useIconStyles';
 
-const Controls = ({ onClickVideoCall }) => {
+const Controls = ({ onClickVideoCall, onClickMicrophone }) => {
 	const classes = useIconStyles();
 
 	return (
@@ -16,10 +16,10 @@ const Controls = ({ onClickVideoCall }) => {
 			alignItems="center"
 			className={classes.root}
 		>
-			<IconButton>
+			<IconButton onClick={onClickMicrophone}>
 				<MicIcon />
 			</IconButton>
-			<IconButton onClick = {onClickVideoCall}>
+			<IconButton onClick={onClickVideoCall}>
 				<VideoCall />
 			</IconButton>
 		</Grid>

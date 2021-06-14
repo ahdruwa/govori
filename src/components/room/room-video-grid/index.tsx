@@ -20,8 +20,6 @@ const RoomVideo = ({ children }: Props) => {
 		children?.forEach((node) => {
 			row.push(node);
 
-			console.log(row.length > rows.length + 1);
-
 			if (row.length > rows.length + 1) {
 				rows.push(row);
 				row = [];
@@ -35,19 +33,19 @@ const RoomVideo = ({ children }: Props) => {
 
 	return (
 		<>
-			{rows.map((_row, rowId) => {
+			{rows.map((_row, i) => {
 				return (
 					<Grid
-						key={rowId}
 						container
 						justify="center"
 						item-aligment="center"
 						direction="row"
 						spacing={5}
+						// key={_row.toString()}
 					>
-						{_row.map((node, nodeId) => {
+						{_row.map((node, j) => {
 							return (
-								<Grid xs={6} key={`${nodeId}-${rowId}`} item>
+								<Grid xs={6} item>
 									{node}
 								</Grid>
 							);

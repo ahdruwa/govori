@@ -6,6 +6,8 @@ const useIconStyles = makeStyles((theme: Theme) =>
 			'& > svg': {
 				margin: theme.spacing(2),
 			},
+			position: 'absolute',
+			bottom: '24px',
 		},
 	})
 );

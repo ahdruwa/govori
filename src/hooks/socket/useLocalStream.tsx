@@ -22,7 +22,7 @@ const useLocalStream: (
 		navigator.mediaDevices
 			.getUserMedia({
 				video: userOptions.video,
-				audio: true,
+				audio: userOptions.audio,
 			})
 			.then((mediaStream) => {
 				setStream(mediaStream);

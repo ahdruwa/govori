@@ -2,39 +2,48 @@ import React, { useContext, useEffect, useState } from 'react';
 import { WebSocketContext } from '../../websocket-context';
 
 const newUserListener = (
+	users: any[],
 	socket: SocketIOClient.Socket,
 	peerConnection: RTCPeerConnection,
-	setUsers: (user: string) => void
+	setUsers: (user: any) => void
 ) => {
-	socket.on('new-user', async ({ answer, user }) => {
-		await peerConnection.setRemoteDescription(
-			new RTCSessionDescription(answer)
+	socket.on('user-update', (user: any) => {
+		const updatedIndex = users.findIndex(
+			(savedUser) => savedUser.nickname === user.nickname
 		);
 
-		console.log({
-			answer,
-		});
+		if (updatedIndex === -1) {
+			users.push(user);
+		}
 
-		setUsers(user);
+		console.log(updatedIndex);
+
+		users[updatedIndex] = user;
+		setUsers(users);
+	});
+	socket.on('user-list', (users: any[]) => {
+		setUsers(users);
 	});
 };
 
 const useUsers = () => {
 	const { socket, peerConnection } = useContext(WebSocketContext);
-	const [users, setUsers] = useState<string[]>([]);
+	const [users, setUsers] = useState<any[]>([]);
+
+	const getUsersList = () => {
+		socket?.emit('user-list');
+	};
 
 	useEffect(() => {
 		if (!(socket && peerConnection)) {
 			throw new Error('miss context');
 		}
 
-		newUserListener(socket, peerConnection, (user) => {
-			users.push(user);
-			setUsers(users);
-		});
+		newUserListener(users, socket, peerConnection, setUsers);
+		getUsersList();
 	}, [peerConnection, socket]);
 
-	return users;
+	return [users, getUsersList];
 };
 
 export default useUsers;

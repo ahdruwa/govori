@@ -10,21 +10,23 @@ import useRTCtrack from '../../hooks/socket/useRTCtrack';
 import useUsers from '../../hooks/socket/useUsers';
 import { WebSocketContext } from '../../websocket-context';
 import Controls from './controls';
-import RoomVideo from './room-video';
+import RoomMember from './room-member';
+import RoomVideo from './room-member/room-video';
 import RoomVideoGrid from './room-video-grid';
 
-const Room = (localStream) => {
+const Room = () => {
 	const { socket, peerConnection } = useContext(WebSocketContext);
 
-	const users = useUsers();
+	const [users, getUsersList] = useUsers();
 	const { roomId } = useParams();
-	const streams = useRTCtrack();
+	const stream = useRTCtrack();
 
-	const [needVideo, setNeedVideo] = useState(true);
+	const [needVideo, setNeedVideo] = useState(false);
+	const [needAudio, setNeedAudio] = useState(true);
 	const userOptions = useMemo(
 		() => ({
 			video: needVideo,
-			audio: false,
+			audio: needAudio,
 		}),
 		[needVideo]
 	);
@@ -59,6 +61,8 @@ const Room = (localStream) => {
 		});
 	}, []);
 	// peerConnection.ontrack = () => console.log(101010);
+	const nickname: string = localStorage.getItem('nickname') || 'nickname';
+
 	return (
 		<Box height={1}>
 			<Grid container>
@@ -66,15 +70,33 @@ const Room = (localStream) => {
 					<Paper>Номер этой комнаты: {roomId}</Paper>
 				</Grid>
 				<RoomVideoGrid>
-					<RoomVideo stream={localVideo} />
-					{streams.map((stream) => {
-						return <RoomVideo stream={stream} key={stream.id} />;
+					<RoomMember
+						isLocal
+						stream={localVideo}
+						key={localVideo.id}
+						nickname={nickname}
+						connectionState={
+							peerConnection?.connectionState || 'new'
+						}
+					/>
+					{users.map((user: any) => {
+						return (
+							<RoomMember
+								nickname={user.nickname}
+								connectionState={user.connectionState}
+								stream={stream}
+								key={user.id}
+							/>
+						);
 					})}
 				</RoomVideoGrid>
 				<Grid item xs={12}>
 					<Controls
 						onClickVideoCall={() => {
 							setNeedVideo(!needVideo);
+						}}
+						onClickMicrophone={() => {
+							setNeedAudio(!needAudio);
 						}}
 					/>
 				</Grid>
