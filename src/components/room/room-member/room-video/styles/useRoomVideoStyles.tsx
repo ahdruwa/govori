@@ -4,6 +4,7 @@ const useRoomVideoStyles = makeStyles((theme: Theme) =>
 	createStyles({
 		'room-video': {
 			width: '320px',
+			display: ({ isNeedVideo }) => (isNeedVideo ? 'block' : 'none'),
 		},
 	})
 );

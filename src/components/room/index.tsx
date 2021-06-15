@@ -1,25 +1,20 @@
 import { Grid, Paper, Box } from '@material-ui/core';
 import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useParams } from 'react-router';
-import useCallMadeListener from '../../hooks/socket/useCallMade';
-import useCallUser from '../../hooks/socket/useCallUser';
 
 import useLocalStream from '../../hooks/socket/useLocalStream';
-import useRoomCreate from '../../hooks/socket/useRoomCreate';
-import useRTCtrack from '../../hooks/socket/useRTCtrack';
 import useUsers from '../../hooks/socket/useUsers';
 import { WebSocketContext } from '../../websocket-context';
 import Controls from './controls';
 import RoomMember from './room-member';
-import RoomVideo from './room-member/room-video';
+import RoomMemberDecorator from './room-member/decorator';
 import RoomVideoGrid from './room-video-grid';
 
 const Room = () => {
 	const { socket, peerConnection } = useContext(WebSocketContext);
 
-	const [users, getUsersList] = useUsers();
+	const [users, getUsersList] = useUsers<any[]>();
 	const { roomId } = useParams();
-	const stream = useRTCtrack();
 
 	const [needVideo, setNeedVideo] = useState(false);
 	const [needAudio, setNeedAudio] = useState(true);
@@ -41,7 +36,6 @@ const Room = () => {
 		console.log({
 			candidate: e.candidate,
 		});
-
 		socket?.emit('ice-candidate', {
 			roomId,
 			iceCandidate: e.candidate,
@@ -80,12 +74,13 @@ const Room = () => {
 						}
 					/>
 					{users.map((user: any) => {
-						console.log(user, 123);
+						console.log(user.tracks, "UNDEFINED?");
+
 						return (
-							<RoomMember
+							<RoomMemberDecorator
 								nickname={user.nickname}
 								connectionState={user.connectionState}
-								stream={stream}
+								tracks={user.tracks}
 								key={user.id}
 							/>
 						);

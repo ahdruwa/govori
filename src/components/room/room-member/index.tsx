@@ -52,15 +52,13 @@ const RoomMember = ({
 	return (
 		<Box>
 			<Paper className={classes['room-memberCard']}>
-				{isNeedVideo ? (
-					<RoomVideo
-						muted={isLocal}
-						stream={stream}
-						key={stream?.id}
-					/>
-				) : (
-					<Person fontSize="large" color="primary" />
-				)}
+				<RoomVideo
+					muted={isLocal}
+					stream={stream}
+					key={stream?.id}
+					isNeedVideo={isNeedVideo}
+				/>
+				{!isNeedVideo && <Person fontSize="large" color="primary" />}
 			</Paper>
 			<Paper className={classes[connectionStateClass]} color="secondary">
 				<Typography>{nickname}</Typography>

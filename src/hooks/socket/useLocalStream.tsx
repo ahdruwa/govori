@@ -4,7 +4,7 @@ import { WebSocketContext } from '../../websocket-context';
 const useLocalStream: (
 	userOptions: MediaStreamConstraints
 ) => [Error | undefined, MediaStream] = (userOptions) => {
-	const { peerConnection } = useContext(WebSocketContext);
+	const { peerConnection, socket } = useContext(WebSocketContext);
 	const [stream, setStream] = useState<MediaStream>(new MediaStream());
 	const [error, setError] = useState<Error>();
 
@@ -12,6 +12,9 @@ const useLocalStream: (
 		if (!userOptions.video) {
 			stream.getVideoTracks().forEach((track) => {
 				track.stop();
+				socket?.emit('remove-track', {
+					track: track.id,
+				});
 			});
 
 			setStream(new MediaStream());
@@ -20,6 +23,9 @@ const useLocalStream: (
 		if (!userOptions.audio) {
 			stream.getAudioTracks().forEach((track) => {
 				track.stop();
+				socket?.emit('remove-track', {
+					track: track.id,
+				});
 			});
 		}
 

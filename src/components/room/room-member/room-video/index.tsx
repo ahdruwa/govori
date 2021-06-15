@@ -5,10 +5,13 @@ import useRoomVideoStyles from './styles/useRoomVideoStyles';
 type Props = {
 	stream?: MediaStream;
 	muted?: boolean;
+	isNeedVideo?: boolean;
 };
 
-const RoomVideo = ({ stream, muted }: Props) => {
-	const classes = useRoomVideoStyles();
+const RoomVideo = ({ stream, muted, isNeedVideo }: Props) => {
+	const classes = useRoomVideoStyles({
+		isNeedVideo,
+	});
 	const videoRef = useRef<HTMLVideoElement>(null);
 
 	useEffect(() => {
@@ -30,6 +33,7 @@ const RoomVideo = ({ stream, muted }: Props) => {
 RoomVideo.defaultProps = {
 	stream: new MediaStream(),
 	muted: false,
+	isNeedVideo: false,
 };
 
 export default memo(RoomVideo);

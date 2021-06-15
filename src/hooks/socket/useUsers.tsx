@@ -7,6 +7,11 @@ const newUserListener = (
 	peerConnection: RTCPeerConnection,
 	setUsers: (user: any) => void
 ) => {
+	socket.on('update-user-list', (users: any[]) => {
+		console.log('USERLISTTTTTTTT');
+
+		setUsers(users);
+	});
 	socket.on('user-update', (user: any) => {
 		const updatedIndex = users.findIndex(
 			(savedUser) => savedUser.nickname === user.nickname
@@ -20,14 +25,11 @@ const newUserListener = (
 
 		console.log(updatedIndex);
 
-		users[updatedIndex] = user;
-		setUsers(users);
+		const newUsers = [...users];
+		newUsers[updatedIndex] = user;
+		setUsers(newUsers);
 	});
-	socket.on('user-list', (users: any[]) => {
-		console.log('USERLISTTTTTTTT');
-
-		setUsers(users);
-	});
+	console.log(socket.id);
 };
 
 const useUsers = () => {
@@ -36,8 +38,7 @@ const useUsers = () => {
 
 	const getUsersList = () => {
 		socket?.emit('user-list');
-		console.log('USERLISTSSSSSS');
-
+		console.log('USERLISTSSSSSS', socket.id);
 	};
 
 	useEffect(() => {
@@ -46,6 +47,8 @@ const useUsers = () => {
 		}
 
 		newUserListener(users, socket, peerConnection, setUsers);
+		console.log(socket.id);
+
 		getUsersList();
 	}, [peerConnection, socket]);
 

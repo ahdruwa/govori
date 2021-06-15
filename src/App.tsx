@@ -24,7 +24,7 @@ import useCallMadeListener from './hooks/socket/useCallMade';
 import useCallUser from './hooks/socket/useCallUser';
 import useLocalStream from './hooks/socket/useLocalStream';
 import useRoomCreate from './hooks/socket/useRoomCreate';
-import useRTCtrack from './hooks/socket/useRTCtrack';
+import useRTCtrack from './hooks/socket/useRTCStream';
 import useUserList from './hooks/socket/useUserList';
 import { WebSocketContext } from './websocket-context';
 
