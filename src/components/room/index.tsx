@@ -28,7 +28,7 @@ const Room = () => {
 			video: needVideo,
 			audio: needAudio,
 		}),
-		[needVideo]
+		[needVideo, needAudio]
 	);
 	const [error, localVideo] = useLocalStream(userOptions);
 	console.log({
@@ -80,6 +80,7 @@ const Room = () => {
 						}
 					/>
 					{users.map((user: any) => {
+						console.log(user, 123);
 						return (
 							<RoomMember
 								nickname={user.nickname}

@@ -14,6 +14,8 @@ const newUserListener = (
 
 		if (updatedIndex === -1) {
 			users.push(user);
+			setUsers(users);
+			return;
 		}
 
 		console.log(updatedIndex);
@@ -22,6 +24,8 @@ const newUserListener = (
 		setUsers(users);
 	});
 	socket.on('user-list', (users: any[]) => {
+		console.log('USERLISTTTTTTTT');
+
 		setUsers(users);
 	});
 };
@@ -32,6 +36,8 @@ const useUsers = () => {
 
 	const getUsersList = () => {
 		socket?.emit('user-list');
+		console.log('USERLISTSSSSSS');
+
 	};
 
 	useEffect(() => {

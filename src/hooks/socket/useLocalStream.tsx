@@ -15,8 +15,12 @@ const useLocalStream: (
 			});
 
 			setStream(new MediaStream());
+		}
 
-			return;
+		if (!userOptions.audio) {
+			stream.getAudioTracks().forEach((track) => {
+				track.stop();
+			});
 		}
 
 		navigator.mediaDevices

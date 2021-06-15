@@ -40,16 +40,24 @@ const RoomMember = ({
 	connectionState,
 	nickname,
 }: PropTypes) => {
+	console.log(nickname);
 	const classes = useRoomMemberStyles();
+
 	const isNeedVideo = !!stream?.getVideoTracks().length;
 
 	const connectionStateClass: ConnectionState = `room-nicknameContainer__${connectionState}`;
+
+	console.log(nickname);
 
 	return (
 		<Box>
 			<Paper className={classes['room-memberCard']}>
 				{isNeedVideo ? (
-					<RoomVideo muted={isLocal} stream={stream} />
+					<RoomVideo
+						muted={isLocal}
+						stream={stream}
+						key={stream?.id}
+					/>
 				) : (
 					<Person fontSize="large" color="primary" />
 				)}
