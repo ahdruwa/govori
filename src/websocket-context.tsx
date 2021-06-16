@@ -60,7 +60,6 @@ const WebSocketContextProvider = ({ children }: Props) => {
 				candidate: e.candidate,
 			});
 			ws.socket?.emit('ice-candidate', {
-				roomId,
 				iceCandidate: e.candidate,
 			});
 		};
