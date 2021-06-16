@@ -26,6 +26,7 @@ const RoomVideo = ({ stream, muted, isNeedVideo }: Props) => {
 			ref={videoRef}
 			autoPlay
 			muted={muted}
+			onClick={(e) => console.log(e)}
 		/>
 	);
 };

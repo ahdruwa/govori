@@ -1,14 +1,25 @@
-import { Grid, Paper, Box } from '@material-ui/core';
-import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { Grid, Paper, Box, Popover, Dialog } from '@material-ui/core';
+import React, {
+	useCallback,
+	useContext,
+	useEffect,
+	useMemo,
+	useRef,
+	useState,
+} from 'react';
 import { useParams } from 'react-router';
 
 import useLocalStream from '../../hooks/socket/useLocalStream';
+import useScreenCapture from '../../hooks/socket/useScreenCapture';
 import useUsers from '../../hooks/socket/useUsers';
 import { WebSocketContext } from '../../websocket-context';
 import Controls from './controls';
+import SelectScreenDialog from './dialogs/select-sreen-dialog';
 import RoomMember from './room-member';
 import RoomMemberDecorator from './room-member/decorator';
+import RoomVideo from './room-member/room-video';
 import RoomVideoGrid from './room-video-grid';
+import VideoPopup from './video-popup';
 
 const Room = () => {
 	const { socket, peerConnection } = useContext(WebSocketContext);
@@ -18,6 +29,11 @@ const Room = () => {
 
 	const [needVideo, setNeedVideo] = useState(false);
 	const [needAudio, setNeedAudio] = useState(true);
+	const [isOpenDialog, setIsOpenDialog] = useState(false);
+	const [screenParams, setScreenParams] = useState('');
+	const [screenShareTrack, setScreenShareTrack] = useState('');
+	const [isOpenVideoPopup, setisOpenVideoPopup] = useState(false);
+
 	const userOptions = useMemo(
 		() => ({
 			video: needVideo,
@@ -26,34 +42,17 @@ const Room = () => {
 		[needVideo, needAudio]
 	);
 	const [error, localVideo] = useLocalStream(userOptions);
-	console.log({
-		users,
-	});
+	const [errorScreen, screenVideo] = useScreenCapture(screenParams);
 
-	peerConnection.onicecandidate = (e) => {
-		if (!e.candidate) return;
-
-		console.log({
-			candidate: e.candidate,
-		});
-		socket?.emit('ice-candidate', {
-			roomId,
-			iceCandidate: e.candidate,
-		});
-	};
-	useEffect(() => {
-		socket?.on('ice-candidate', async ({ iceCandidate }) => {
-			if (!iceCandidate || users.length) return;
-
-			try {
-				await peerConnection.addIceCandidate(
-					new RTCIceCandidate(iceCandidate)
-				);
-			} catch (e) {
-				console.error('Error adding received ice candidate', e);
-			}
-		});
+	const onSaveScreenParams = useCallback((screenId) => {
+		setScreenParams(screenId);
 	}, []);
+
+	const handleScreenShare = useCallback((screenTrack) => {
+		setisOpenVideoPopup(true);
+		setScreenShareTrack(screenTrack);
+	}, []);
+
 	// peerConnection.ontrack = () => console.log(101010);
 	const nickname: string = localStorage.getItem('nickname') || 'nickname';
 
@@ -74,7 +73,7 @@ const Room = () => {
 						}
 					/>
 					{users.map((user: any) => {
-						console.log(user.tracks, "UNDEFINED?");
+						console.log(user.tracks, 'UNDEFINED?');
 
 						return (
 							<RoomMemberDecorator
@@ -82,9 +81,14 @@ const Room = () => {
 								connectionState={user.connectionState}
 								tracks={user.tracks}
 								key={user.id}
+								onClickScreenShare={handleScreenShare}
 							/>
 						);
 					})}
+					<VideoPopup
+						open={isOpenVideoPopup}
+						track={screenShareTrack}
+					/>
 				</RoomVideoGrid>
 				<Grid item xs={12}>
 					<Controls
@@ -94,9 +98,19 @@ const Room = () => {
 						onClickMicrophone={() => {
 							setNeedAudio(!needAudio);
 						}}
+						onClickScreenShare={() => {
+							setIsOpenDialog(true);
+						}}
 					/>
 				</Grid>
 			</Grid>
+			<SelectScreenDialog
+				handleClose={() => {
+					setIsOpenDialog(false);
+				}}
+				handleSave={onSaveScreenParams}
+				open={isOpenDialog}
+			/>
 		</Box>
 	);
 };

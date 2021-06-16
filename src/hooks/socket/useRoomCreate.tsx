@@ -1,3 +1,4 @@
+import { BrowserWindow } from 'electron/main';
 import React, { useContext, useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
 import { WebSocketContext } from '../../websocket-context';

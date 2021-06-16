@@ -53,6 +53,30 @@ const WebSocketContextProvider = ({ children }: Props) => {
 			peerConnection.setRemoteDescription(answer);
 		});
 
+		peerConnection.onicecandidate = (e) => {
+			if (!e.candidate) return;
+
+			console.log({
+				candidate: e.candidate,
+			});
+			ws.socket?.emit('ice-candidate', {
+				roomId,
+				iceCandidate: e.candidate,
+			});
+		};
+
+		ws.socket?.on('ice-candidate', async ({ iceCandidate }) => {
+			if (!iceCandidate) return;
+
+			try {
+				await peerConnection.addIceCandidate(
+					new RTCIceCandidate(iceCandidate)
+				);
+			} catch (e) {
+				console.error('Error adding received ice candidate', e);
+			}
+		});
+
 		ws.socket.on('negotiation-need', async ({ offer }) => {
 			await peerConnection.setRemoteDescription(offer);
 

@@ -14,14 +14,26 @@ type PropTypes = {
 		| 'connecting';
 	nickname: string;
 	tracks: string[];
+	onClickScreenShare: (trackId: any) => void;
 };
 
 const RoomMemberDecorator = ({
 	connectionState,
 	nickname,
 	tracks,
+	onClickScreenShare,
 }: PropTypes) => {
 	const stream = useRTCStream(tracks);
+	const [screenShareTrack, setScreenShareTrack] = useState<string>('');
+
+	useEffect(() => {
+		stream.getTracks().forEach((track) => {
+			if (track.label === 'Screen') {
+				setScreenShareTrack(track.id);
+			}
+		});
+		// console.log(screenShareTrack);
+	}, [stream]);
 
 	return (
 		<>
@@ -29,6 +41,8 @@ const RoomMemberDecorator = ({
 				connectionState={connectionState}
 				nickname={nickname}
 				stream={stream}
+				screenShareTrack={screenShareTrack}
+				onClickScreenShare={onClickScreenShare}
 			/>
 		</>
 	);

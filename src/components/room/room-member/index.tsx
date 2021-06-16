@@ -1,5 +1,5 @@
-import { Grid, Paper, Box, Typography } from '@material-ui/core';
-import { Person } from '@material-ui/icons';
+import { Grid, Paper, Box, Typography, IconButton } from '@material-ui/core';
+import { Person, ScreenShareTwoTone } from '@material-ui/icons';
 import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useParams } from 'react-router';
 import useCallMadeListener from '../../hooks/socket/useCallMade';
@@ -26,6 +26,8 @@ type PropTypes = {
 		| 'closed'
 		| 'connecting';
 	nickname: string;
+	screenShareTrack?: string;
+	onClickScreenShare: (screenTrack: any) => void;
 };
 
 type ConnectionState =
@@ -39,6 +41,8 @@ const RoomMember = ({
 	isLocal,
 	connectionState,
 	nickname,
+	screenShareTrack,
+	onClickScreenShare,
 }: PropTypes) => {
 	console.log(nickname);
 	const classes = useRoomMemberStyles();
@@ -51,15 +55,37 @@ const RoomMember = ({
 
 	return (
 		<Box>
-			<Paper className={classes['room-memberCard']}>
-				<RoomVideo
-					muted={isLocal}
-					stream={stream}
-					key={stream?.id}
-					isNeedVideo={isNeedVideo}
-				/>
-				{!isNeedVideo && <Person fontSize="large" color="primary" />}
-			</Paper>
+			<Box
+				style={{
+					position: 'relative',
+					width: '100%',
+					height: '100%',
+				}}
+			>
+				<Paper className={classes['room-memberCard']}>
+					<RoomVideo
+						muted={isLocal}
+						stream={stream}
+						key={stream?.id}
+						isNeedVideo={isNeedVideo}
+					/>
+					{!isNeedVideo && (
+						<Person fontSize="large" color="primary" />
+					)}
+					{!!screenShareTrack && (
+						<IconButton
+							style={{
+								position: 'absolute',
+								left: '15px',
+								bottom: '15px',
+							}}
+							onClick={onClickScreenShare}
+						>
+							<ScreenShareTwoTone />
+						</IconButton>
+					)}
+				</Paper>
+			</Box>
 			<Paper className={classes[connectionStateClass]} color="secondary">
 				<Typography>{nickname}</Typography>
 			</Paper>
@@ -70,6 +96,7 @@ const RoomMember = ({
 RoomMember.defaultProps = {
 	stream: new MediaStream(),
 	isLocal: false,
+	screenShareTrack: '',
 };
 
 export default RoomMember;

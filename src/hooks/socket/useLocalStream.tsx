@@ -1,6 +1,8 @@
 import { useContext, useEffect, useState } from 'react';
 import { WebSocketContext } from '../../websocket-context';
 
+const { desktopCapturer } = require('electron');
+
 const useLocalStream: (
 	userOptions: MediaStreamConstraints
 ) => [Error | undefined, MediaStream] = (userOptions) => {

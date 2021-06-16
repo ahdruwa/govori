@@ -10,7 +10,7 @@ const useRTCStream = (tracks: string[]) => {
 	useEffect(() => {
 		peerConnection?.addEventListener('track', ({ streams, track }) => {
 			const [stream] = streams;
-			console.log(tracks);
+			console.log(tracks, 111111);
 			if (!tracks.includes(track.id)) {
 				tracks.push(track.id);
 			}
@@ -18,12 +18,16 @@ const useRTCStream = (tracks: string[]) => {
 			const mediaStream = new MediaStream();
 
 			tracks.forEach((trackId: string) => {
+				console.log(trackId, 222222);
 				const userTrack = stream.getTrackById(trackId);
 
 				if (userTrack) {
+					console.log(userTrack, 3333333);
 					mediaStream.addTrack(userTrack);
 				}
 			});
+
+			console.log(mediaStream, 44444444);
 
 			setRtcStream(mediaStream);
 		});

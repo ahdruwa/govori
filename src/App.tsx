@@ -1,31 +1,12 @@
 import { Button, Grid } from '@material-ui/core';
-import React, {
-	useCallback,
-	useContext,
-	useEffect,
-	useMemo,
-	useRef,
-	useState,
-} from 'react';
-import {
-	HashRouter as Router,
-	Switch,
-	Route,
-	Link,
-	NavLink,
-} from 'react-router-dom';
-import robot from 'robotjs';
+import { BrowserWindow } from 'electron/main';
+import React, { useContext, useEffect, useMemo } from 'react';
+import { HashRouter as Router, Switch, Route, NavLink } from 'react-router-dom';
 
 import Room from './components/room';
 import RoomPicker from './components/roomPicker';
 import Settings from './components/settings';
-import useAnswerlMadeListener from './hooks/socket/useAnswerMade';
-import useCallMadeListener from './hooks/socket/useCallMade';
-import useCallUser from './hooks/socket/useCallUser';
-import useLocalStream from './hooks/socket/useLocalStream';
 import useRoomCreate from './hooks/socket/useRoomCreate';
-import useRTCtrack from './hooks/socket/useRTCStream';
-import useUserList from './hooks/socket/useUserList';
 import { WebSocketContext } from './websocket-context';
 
 const usePizdec = () => {
@@ -54,10 +35,6 @@ const Hello = () => {
 	// const { callAccept } = callHandlers;
 
 	// const stream = useRTCtrack();
-
-	// useEffect(() => {
-	// 	video.current.srcObject = stream;
-	// }, [stream]);
 	const handleRoomCreate = useRoomCreate();
 
 	return (
