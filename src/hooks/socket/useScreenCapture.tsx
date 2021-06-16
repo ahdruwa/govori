@@ -28,6 +28,9 @@ const useScreenCapture: (screenId: string) => [Error | undefined, MediaStream] =
 					setStream(mediaStream);
 
 					mediaStream.getTracks().forEach((track) => {
+						socket?.emit('screen-cast', {
+							track: track.id,
+						})
 						peerConnection?.addTrack(track, mediaStream);
 					});
 

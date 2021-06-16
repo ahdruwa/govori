@@ -15,6 +15,7 @@ type PropTypes = {
 	nickname: string;
 	tracks: string[];
 	onClickScreenShare: (trackId: any) => void;
+	screenCaprureTrack: string;
 };
 
 const RoomMemberDecorator = ({
@@ -22,18 +23,22 @@ const RoomMemberDecorator = ({
 	nickname,
 	tracks,
 	onClickScreenShare,
+	screenCaprureTrack,
 }: PropTypes) => {
-	const stream = useRTCStream(tracks);
+	const stream = useRTCStream(tracks, false);
 	const [screenShareTrack, setScreenShareTrack] = useState<string>('');
 
 	useEffect(() => {
+		console.log(stream.getTracks(), tracks);
+
 		stream.getTracks().forEach((track) => {
-			if (track.label === 'Screen') {
+			if (track.id === screenCaprureTrack) {
+				stream.removeTrack(track);
 				setScreenShareTrack(track.id);
 			}
 		});
-		// console.log(screenShareTrack);
-	}, [stream]);
+		console.log(screenShareTrack);
+	}, [stream, screenCaprureTrack]);
 
 	return (
 		<>

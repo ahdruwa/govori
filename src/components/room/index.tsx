@@ -10,6 +10,7 @@ import React, {
 import { useParams } from 'react-router';
 
 import useLocalStream from '../../hooks/socket/useLocalStream';
+import useRTCStream from '../../hooks/socket/useRTCStream';
 import useScreenCapture from '../../hooks/socket/useScreenCapture';
 import useUsers from '../../hooks/socket/useUsers';
 import { WebSocketContext } from '../../websocket-context';
@@ -42,7 +43,6 @@ const Room = () => {
 		[needVideo, needAudio]
 	);
 	const [error, localVideo] = useLocalStream(userOptions);
-	const [errorScreen, screenVideo] = useScreenCapture(screenParams);
 
 	const onSaveScreenParams = useCallback((screenId) => {
 		setScreenParams(screenId);
@@ -82,6 +82,7 @@ const Room = () => {
 								tracks={user.tracks}
 								key={user.id}
 								onClickScreenShare={handleScreenShare}
+								screenCaprureTrack={user.screenCapture}
 							/>
 						);
 					})}

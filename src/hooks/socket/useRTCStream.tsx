@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { WebSocketContext } from '../../websocket-context';
 
-const useRTCStream = (tracks: string[]) => {
+const useRTCStream = (tracks: string[], addScreen = true) => {
 	const { peerConnection } = useContext(WebSocketContext);
 	const [rtcStream, setRtcStream] = useState<MediaStream>(new MediaStream());
 
@@ -20,9 +20,19 @@ const useRTCStream = (tracks: string[]) => {
 			tracks.forEach((trackId: string) => {
 				console.log(trackId, 222222);
 				const userTrack = stream.getTrackById(trackId);
+				console.log(userTrack, 100100);
+
 
 				if (userTrack) {
-					console.log(userTrack, 3333333);
+					console.log(userTrack);
+
+					if (!addScreen && userTrack.label === 'Screen') {
+						userTrack.enabled = false;
+						console.log(userTrack, 1010101);
+
+						return;
+					}
+
 					mediaStream.addTrack(userTrack);
 				}
 			});
