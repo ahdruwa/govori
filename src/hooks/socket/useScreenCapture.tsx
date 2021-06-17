@@ -29,7 +29,7 @@ const useScreenCapture: (screenId: string) => [Error | undefined, MediaStream] =
 
 					mediaStream.getTracks().forEach((track) => {
 						socket?.emit('screen-cast', {
-							track: mediaStream.id,
+							stream: mediaStream.id,
 						});
 						console.log('SCREEEEEEEEEEEEEEEENCAST');
 
