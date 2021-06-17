@@ -46,7 +46,7 @@ const useRoomCreate = () => {
 		const nickname = localStorage.getItem('nickname');
 
 		if (!nickname) {
-			return Error('Enter nickname!');
+			return Error('Введите имя в настройках!');
 		}
 
 		if (!(socket && peerConnection)) {

@@ -23,7 +23,7 @@ const newUserListener = (
 			return;
 		}
 
-		console.log(updatedIndex);
+		console.log(user, 'UPDATEUSER');
 
 		const newUsers = [...users];
 		newUsers[updatedIndex] = user;

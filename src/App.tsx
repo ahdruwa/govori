@@ -1,6 +1,6 @@
-import { Button, Grid } from '@material-ui/core';
+import { Button, Grid, Paper, Typography } from '@material-ui/core';
 import { BrowserWindow } from 'electron/main';
-import React, { useContext, useEffect, useMemo } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { HashRouter as Router, Switch, Route, NavLink } from 'react-router-dom';
 
 import Room from './components/room';
@@ -16,26 +16,16 @@ const usePizdec = () => {
 };
 
 const Hello = () => {
-	const opts = useMemo(
-		() => ({
-			video: true,
-			audio: true,
-		}),
-		[]
-	);
-	// const [e, localStream] = useLocalStream(opts);
-	// const userList = useUserList();
-	// const video = useRef();
-	// const { socket, peerConnection } = useContext(WebSocketContext);
-	// const answerMade = useAnswerlMadeListener();
+	const [errorMessage, setErrorMessage] = useState<string>('');
+	const roomCreate = useRoomCreate();
 
-	// const callUser = useCallUser();
-	// const [callMade, callHandlers] = useCallMadeListener();
+	const handleRoomCreate = () => {
+		const error = roomCreate();
 
-	// const { callAccept } = callHandlers;
+		if (error) return setErrorMessage(error.message);
 
-	// const stream = useRTCtrack();
-	const handleRoomCreate = useRoomCreate();
+		return setErrorMessage('');
+	};
 
 	return (
 		<Grid>
@@ -46,6 +36,11 @@ const Hello = () => {
 			<NavLink to="/settings">
 				<Button>Настройки</Button>
 			</NavLink>
+			{errorMessage && (
+				<Paper>
+					<Typography color="primary">{errorMessage}</Typography>
+				</Paper>
+			)}
 		</Grid>
 	);
 };

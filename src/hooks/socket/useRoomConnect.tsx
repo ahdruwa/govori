@@ -43,7 +43,7 @@ const useConnectRoom = (roomId: string) => {
 		const nickname = localStorage.getItem('nickname');
 
 		if (!nickname) {
-			return Error('Enter nickname!');
+			return Error('Введите имя пользователя в настройках!');
 		}
 
 		if (!socket || !peerConnection) {

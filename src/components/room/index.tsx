@@ -43,6 +43,7 @@ const Room = () => {
 		[needVideo, needAudio]
 	);
 	const [error, localVideo] = useLocalStream(userOptions);
+	const [screenCaptureError] = useScreenCapture(screenParams);
 
 	const onSaveScreenParams = useCallback((screenId) => {
 		setScreenParams(screenId);
@@ -82,7 +83,7 @@ const Room = () => {
 								tracks={user.tracks}
 								key={user.id}
 								onClickScreenShare={handleScreenShare}
-								screenCaprureTrack={user.screenCapture}
+								screenCaptureStream={user.screenCast}
 							/>
 						);
 					})}

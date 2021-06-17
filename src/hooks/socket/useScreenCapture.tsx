@@ -29,10 +29,14 @@ const useScreenCapture: (screenId: string) => [Error | undefined, MediaStream] =
 
 					mediaStream.getTracks().forEach((track) => {
 						socket?.emit('screen-cast', {
-							track: track.id,
-						})
+							track: mediaStream.id,
+						});
+						console.log('SCREEEEEEEEEEEEEEEENCAST');
+
 						peerConnection?.addTrack(track, mediaStream);
 					});
+
+					console.log(mediaStream.id);
 
 					return mediaStream;
 				})
@@ -40,7 +44,7 @@ const useScreenCapture: (screenId: string) => [Error | undefined, MediaStream] =
 					setError(e);
 					console.error(e.message);
 				});
-		}, [screenId, peerConnection]);
+		}, [screenId, peerConnection, socket]);
 
 		return [error, stream];
 	};
