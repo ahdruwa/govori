@@ -10,7 +10,10 @@ type PropTypes = {
 
 const VideoPopup = ({ track, open }: PropTypes) => {
 	const videoRef = useRef<HTMLVideoElement>(null);
-	const stream = useRTCStream([track]);
+	const [stream] = useRTCStream([track]);
+
+	console.log(track, stream);
+
 
 	useEffect(() => {
 		if (videoRef.current) {

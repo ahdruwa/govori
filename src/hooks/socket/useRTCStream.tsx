@@ -4,6 +4,7 @@ import { WebSocketContext } from '../../websocket-context';
 const useRTCStream = (tracks: string[], screenCapture?: string) => {
 	const { peerConnection } = useContext(WebSocketContext);
 	const [rtcStream, setRtcStream] = useState<MediaStream>(new MediaStream());
+	const [screenTrackId, setScreenTrackId] = useState<string>('');
 
 	console.log(tracks);
 
@@ -28,9 +29,10 @@ const useRTCStream = (tracks: string[], screenCapture?: string) => {
 
 					console.log(stream.id, screenCapture);
 
-					if (!screenCapture && stream.id === screenCapture) {
-						track.screenCapture = true;
+					if (screenCapture && stream.id === screenCapture) {
+						setScreenTrackId(track.id);
 
+						mediaStream.addTrack(userTrack);
 						return;
 					}
 
@@ -44,7 +46,7 @@ const useRTCStream = (tracks: string[], screenCapture?: string) => {
 		});
 	}, [tracks, peerConnection]);
 
-	return rtcStream;
+	return [rtcStream, screenTrackId];
 };
 
 export default useRTCStream;

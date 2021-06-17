@@ -25,7 +25,7 @@ const WebSocketContextProvider = ({ children }: Props) => {
 	const peerConnection = useMemo(() => new window.RTCPeerConnection(), []);
 	const ws = useMemo(
 		() => ({
-			socket: io('ws://localhost:3000/signalization'),
+			socket: io('ws://192.168.0.100:3000/signalization'),
 			peerConnection,
 			dataChannel: peerConnection.createDataChannel('ConnectionState'),
 		}),
@@ -95,7 +95,7 @@ const WebSocketContextProvider = ({ children }: Props) => {
 
 				if (ws.peerConnection.connectionState === 'connected') {
 					console.log('CONNECTED');
-					ws.dataChannel.send('connected');
+					// ws.dataChannel.send('connected');
 				}
 
 				if (

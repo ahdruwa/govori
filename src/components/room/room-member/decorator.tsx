@@ -25,14 +25,18 @@ const RoomMemberDecorator = ({
 	onClickScreenShare,
 	screenCaptureStream,
 }: PropTypes) => {
-	const stream = useRTCStream(tracks, screenCaptureStream);
+	const [stream, screenTrackId] = useRTCStream(tracks, screenCaptureStream);
 	const [screenShareTrack, setScreenShareTrack] = useState<string>('');
+
+	console.log(screenTrackId, '3aJlyna');
+
 
 	useEffect(() => {
 		console.log(stream.getTracks(), tracks);
 
 		stream.getTracks().forEach((track) => {
-			if (track.screenCapture) {
+			if (track.id === screenTrackId) {
+				console.log(track);
 				stream.removeTrack(track);
 				setScreenShareTrack(track.id);
 			}
