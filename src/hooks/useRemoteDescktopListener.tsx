@@ -4,13 +4,11 @@ import { WebSocketContext } from '../websocket-context';
 
 const robotjs = require('robotjs');
 
-const keysMap = {
-
-}
+const keysMap = ['left', 'middle', 'right'];
 
 const useRemoteDescktopListener: (
-	userOptions?: MediaStreamConstraints
-) => [Error | undefined, DesktopCapturerSource[]] = (userOptions) => {
+	isRemoteDesktop: boolean
+) => [Error | undefined, DesktopCapturerSource[]] = (isRemoteDesktop) => {
 	const { peerConnection, socket } =
 		useContext<WebSocketEntity>(WebSocketContext);
 	const [sources, setSources] = useState<DesktopCapturerSource[]>([]);
@@ -21,11 +19,20 @@ const useRemoteDescktopListener: (
 			throw new Error('miss context!');
 		}
 
+		const removeListeners = () => {
+			socket.off('click');
+			socket.off('keytoggle');
+		};
+
+		if (!isRemoteDesktop) {
+			return removeListeners();
+		}
+
 		socket.on('click', (data) => {
 			const { x, y, button, kind } = data;
 
 			robotjs.moveMouse(x, y);
-			robotjs.mouseClick(button);
+			robotjs.mouseClick(keysMap[button]);
 		});
 
 		socket.on('keytoggle', (data) => {
@@ -34,11 +41,8 @@ const useRemoteDescktopListener: (
 			robotjs.keyToggle(key, event);
 		});
 
-		return () => {
-			socket.off('click');
-			socket.off('keytoggle');
-		};
-	}, []);
+		return removeListeners;
+	}, [isRemoteDesktop, socket]);
 
 	return [error, sources];
 };

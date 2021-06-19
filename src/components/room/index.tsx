@@ -10,25 +10,22 @@ import React, {
 import { useParams } from 'react-router';
 
 import useLocalStream from '../../hooks/socket/useLocalStream';
-import useRTCStream from '../../hooks/socket/useRTCStream';
 import useScreenCapture from '../../hooks/socket/useScreenCapture';
 import useUsers from '../../hooks/socket/useUsers';
+import useConnectionState from '../../hooks/useConnectionState';
 import useRemoteDescktopListener from '../../hooks/useRemoteDescktopListener';
 import { WebSocketContext } from '../../websocket-context';
 import Controls from './controls';
 import SelectScreenDialog from './dialogs/select-sreen-dialog';
 import RoomMember from './room-member';
 import RoomMemberDecorator from './room-member/decorator';
-import RoomVideo from './room-member/room-video';
 import RoomVideoGrid from './room-video-grid';
 import VideoPopup from './video-popup';
 
 const Room = () => {
-	const { socket, peerConnection } = useContext(WebSocketContext);
-
 	const [users, getUsersList] = useUsers<any[]>();
 	const { roomId } = useParams<{ roomId: string }>();
-	useRemoteDescktopListener();
+	const { peerConnection } = useContext(WebSocketContext);
 
 	const [needVideo, setNeedVideo] = useState(false);
 	const [needAudio, setNeedAudio] = useState(true);
@@ -36,7 +33,12 @@ const Room = () => {
 	const [screenParams, setScreenParams] = useState('');
 	const [screenShareTrack, setScreenShareTrack] = useState('');
 	const [screenStream, setScreenStream] = useState('');
+	const [screenCaster, setScreenCaster] = useState('');
 	const [isOpenVideoPopup, setisOpenVideoPopup] = useState(false);
+	const [screenCaptureError, screenCaptureStream] =
+		useScreenCapture(screenParams);
+	const [isRemoteDesktop, setRemoteDesktop] = useState(false);
+	const connectionState = useConnectionState();
 
 	const userOptions = useMemo(
 		() => ({
@@ -46,18 +48,37 @@ const Room = () => {
 		[needVideo, needAudio]
 	);
 	const [error, localVideo] = useLocalStream(userOptions);
-	const [screenCaptureError] = useScreenCapture(screenParams);
+	console.log(localVideo);
+
+	useRemoteDescktopListener(
+		isRemoteDesktop && screenParams.includes('screen')
+	);
 
 	const onSaveScreenParams = useCallback((screenId) => {
 		setScreenParams(screenId);
 	}, []);
 
-	const handleScreenShare = useCallback((screenTrack, screenStreamId) => {
-		setisOpenVideoPopup(true);
-		setScreenShareTrack(screenTrack);
-		setScreenStream(screenStreamId);
-		console.log(screenTrack, screenStreamId, 2222228888888888);
-	}, []);
+	const handleScreenShare = useCallback(
+		(screenTrack, screenStreamId, userId) => {
+			setisOpenVideoPopup(true);
+			setScreenShareTrack(screenTrack);
+			setScreenStream(screenStreamId);
+			setScreenCaster(userId);
+		},
+		[]
+	);
+
+	useEffect(() => {
+		return () => {
+			peerConnection?.close();
+			localVideo.getTracks().forEach((track) => {
+				track.stop();
+			});
+			screenCaptureStream.getTracks().forEach((track) => {
+				track.stop();
+			});
+		};
+	}, [localVideo]);
 
 	// peerConnection.ontrack = () => console.log(101010);
 	const nickname: string = localStorage.getItem('nickname') || 'nickname';
@@ -74,9 +95,7 @@ const Room = () => {
 						stream={localVideo}
 						key={localVideo.id}
 						nickname={nickname}
-						connectionState={
-							peerConnection?.connectionState || 'new'
-						}
+						connectionState={connectionState || 'new'}
 					/>
 					{users.map((user: any) => {
 						if (user.screenCast && !screenStream) {
@@ -91,12 +110,14 @@ const Room = () => {
 								key={user.id}
 								onClickScreenShare={handleScreenShare}
 								screenCaptureStream={user.screenCast}
+								userId={user.id}
 							/>
 						);
 					})}
 					<VideoPopup
 						open={isOpenVideoPopup}
 						streamId={screenStream}
+						userId={screenCaster}
 					/>
 				</RoomVideoGrid>
 				<Grid item xs={12}>
@@ -110,6 +131,10 @@ const Room = () => {
 						onClickScreenShare={() => {
 							setIsOpenDialog(true);
 						}}
+						isStream={screenCaptureStream.getTracks().length}
+						onClickRemoteDesktop={() => {
+							setRemoteDesktop(!isRemoteDesktop);
+						}}
 					/>
 				</Grid>
 			</Grid>
@@ -117,7 +142,10 @@ const Room = () => {
 				handleClose={() => {
 					setIsOpenDialog(false);
 				}}
-				handleSave={onSaveScreenParams}
+				handleSave={(display) => {
+					onSaveScreenParams(display);
+					setIsOpenDialog(false);
+				}}
 				open={isOpenDialog}
 			/>
 		</Box>

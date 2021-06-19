@@ -16,6 +16,7 @@ type PropTypes = {
 	tracks: string[];
 	onClickScreenShare: (trackId: any) => void;
 	screenCaptureStream: string;
+	userId: string;
 };
 
 const RoomMemberDecorator = ({
@@ -24,6 +25,7 @@ const RoomMemberDecorator = ({
 	tracks,
 	onClickScreenShare,
 	screenCaptureStream,
+	userId,
 }: PropTypes) => {
 	const [stream, screenTrackId] = useRTCStream(tracks, screenCaptureStream);
 	const [screenShareTrack, setScreenShareTrack] = useState<string>('');
@@ -53,6 +55,7 @@ const RoomMemberDecorator = ({
 				screenShareTrack={screenShareTrack}
 				onClickScreenShare={onClickScreenShare}
 				screenCaptureStream={screenCaptureStream}
+				userId={userId}
 			/>
 		</>
 	);

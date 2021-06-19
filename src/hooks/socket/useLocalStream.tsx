@@ -11,6 +11,8 @@ const useLocalStream: (
 	const [error, setError] = useState<Error>();
 
 	useEffect(() => {
+		console.log(userOptions);
+
 		if (!userOptions.video) {
 			stream.getVideoTracks().forEach((track) => {
 				track.stop();
@@ -18,8 +20,6 @@ const useLocalStream: (
 					track: track.id,
 				});
 			});
-
-			setStream(new MediaStream());
 		}
 
 		if (!userOptions.audio) {
@@ -49,7 +49,7 @@ const useLocalStream: (
 				setError(e);
 				console.error(e.message);
 			});
-	}, [userOptions]);
+	}, [userOptions, peerConnection, socket]);
 
 	return [error, stream];
 };

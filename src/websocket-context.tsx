@@ -4,6 +4,7 @@ import React, {
 	useEffect,
 	useMemo,
 	useRef,
+	useState,
 } from 'react';
 import io from 'socket.io-client';
 
@@ -22,14 +23,16 @@ const WebSocketContext = createContext<WebSocketEntity>(defaultWS);
 export { WebSocketContext };
 
 const WebSocketContextProvider = ({ children }: Props) => {
-	const peerConnection = useMemo(() => new window.RTCPeerConnection(), []);
+	const [peerConnection, setPeerConnection] = useState(
+		new RTCPeerConnection()
+	);
 	const ws = useMemo(
 		() => ({
 			socket: io('ws://192.168.0.100:3000/signalization'),
 			peerConnection,
 			dataChannel: peerConnection.createDataChannel('ConnectionState'),
 		}),
-		[]
+		[peerConnection]
 	);
 
 	useEffect(() => {
@@ -88,25 +91,26 @@ const WebSocketContextProvider = ({ children }: Props) => {
 			});
 		});
 
-		ws.peerConnection?.addEventListener(
-			'connectionstatechange',
-			(event) => {
-				console.log(event);
+		peerConnection?.addEventListener('connectionstatechange', (event) => {
+			console.log(event);
 
-				if (ws.peerConnection.connectionState === 'connected') {
-					console.log('CONNECTED');
-					// ws.dataChannel.send('connected');
-				}
-
-				if (
-					ws.peerConnection.connectionState === 'disconnected' ||
-					ws.peerConnection.connectionState === 'failed'
-				) {
-					console.log('Disconnected');
-					ws.socket.emit('disconnect');
-				}
+			if (ws.peerConnection.connectionState === 'connected') {
+				console.log('CONNECTED');
+				// ws.dataChannel.send('connected');
 			}
-		);
+
+			if (
+				peerConnection.connectionState === 'disconnected' ||
+				peerConnection.connectionState === 'failed' ||
+				peerConnection.connectionState === 'closed'
+			) {
+				console.log('Disconnected');
+
+				setPeerConnection(new RTCPeerConnection());
+
+				ws.socket.emit('disconnect');
+			}
+		});
 	}, []);
 
 	return (

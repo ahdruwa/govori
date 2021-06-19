@@ -27,8 +27,13 @@ type PropTypes = {
 		| 'connecting';
 	nickname: string;
 	screenShareTrack?: string;
-	onClickScreenShare: (screenTrack: any) => void;
+	onClickScreenShare: (
+		screenTrack: string,
+		captureStream: string,
+		userId: string
+	) => void;
 	screenCaptureStream: string;
+	userId: string;
 };
 
 type ConnectionState =
@@ -45,6 +50,7 @@ const RoomMember = ({
 	screenShareTrack,
 	onClickScreenShare,
 	screenCaptureStream,
+	userId,
 }: PropTypes) => {
 	console.log(nickname);
 	const classes = useRoomMemberStyles();
@@ -85,6 +91,7 @@ const RoomMember = ({
 								onClickScreenShare(
 									screenShareTrack,
 									screenCaptureStream,
+									userId
 								)
 							}
 						>

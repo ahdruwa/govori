@@ -7,12 +7,14 @@ import React, {
 	useRef,
 	useState,
 } from 'react';
+import { useHistory } from 'react-router';
 import useConnectRoom from '../../hooks/socket/useRoomConnect';
 
 const RoomPicker = () => {
 	const [roomId, setRoomId] = useState('');
 	const connectRoom = useConnectRoom(roomId);
 	const [connectRoomError, setConnectRoomError] = useState<string>('');
+	const history = useHistory();
 
 	const handleRoomConnect = useCallback(() => {
 		const error = connectRoom();
@@ -42,6 +44,9 @@ const RoomPicker = () => {
 			</Grid>
 			<Grid item>
 				<Button onClick={handleRoomConnect}>Войти</Button>
+			</Grid>
+			<Grid item>
+				<Button onClick={() => history.push('/')}>Назад</Button>
 			</Grid>
 			{connectRoomError && (
 				<Paper>

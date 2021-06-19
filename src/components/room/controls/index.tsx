@@ -1,12 +1,20 @@
 import { Grid, IconButton } from '@material-ui/core';
-import { Camera, CameraAlt, ScreenShare, VideoCall } from '@material-ui/icons';
+import { Cancel, LiveTv, Mouse, ScreenShare, VideoCall } from '@material-ui/icons';
 import MicIcon from '@material-ui/icons/Mic';
 import React, { memo, useEffect, useRef } from 'react';
+import { useHistory } from 'react-router';
 
 import useIconStyles from './styles/useIconStyles';
 
-const Controls = ({ onClickVideoCall, onClickMicrophone, onClickScreenShare }) => {
+const Controls = ({
+	onClickVideoCall,
+	onClickMicrophone,
+	onClickScreenShare,
+	isStream,
+	onClickRemoteDesktop,
+}) => {
 	const classes = useIconStyles();
+	const history = useHistory();
 
 	return (
 		<Grid
@@ -24,6 +32,14 @@ const Controls = ({ onClickVideoCall, onClickMicrophone, onClickScreenShare }) =
 			</IconButton>
 			<IconButton onClick={onClickScreenShare}>
 				<ScreenShare />
+			</IconButton>
+			{!!isStream && (
+				<IconButton onClick={onClickRemoteDesktop}>
+					<Mouse />
+				</IconButton>
+			)}
+			<IconButton onClick={() => history.push('/')}>
+				<Cancel color="error" />
 			</IconButton>
 		</Grid>
 	);

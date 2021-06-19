@@ -9,6 +9,7 @@ const useRemoteDescktopTranslator = () => {
 	};
 
 	const emitKeyToggle = (keyToggleData) => {
+		console.log(keyToggleData);
 		socket?.emit('keyToggle', keyToggleData);
 	};
 

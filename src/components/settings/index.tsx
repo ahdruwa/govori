@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { Button, Grid, Input } from '@material-ui/core';
+import { useHistory } from 'react-router';
 
 const Settings = () => {
 	const initialName = localStorage.getItem('nickname') || '';
 	const [name, setName] = useState<string>(initialName);
+	const history = useHistory();
 
 	const handleChangeName = (e: InputEvent) => {
 		const evenTarget: HTMLInputElement = e.target;
@@ -24,6 +26,9 @@ const Settings = () => {
 			</Grid>
 			<Grid item>
 				<Button onClick={handleSaveName}>Сохранить</Button>
+			</Grid>
+			<Grid item>
+				<Button onClick={() => history.push('/')}>Назад</Button>
 			</Grid>
 		</Grid>
 	);
