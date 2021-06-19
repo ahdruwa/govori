@@ -1,12 +1,12 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { WebSocketContext } from '../../websocket-context';
 
-const useRTCStream = (tracks: string[], screenCapture?: string) => {
+const useRTCStream = (tracks: string[], screenCapture?: string, kostil = false) => {
 	const { peerConnection } = useContext(WebSocketContext);
 	const [rtcStream, setRtcStream] = useState<MediaStream>(new MediaStream());
 	const [screenTrackId, setScreenTrackId] = useState<string>('');
 
-	console.log(tracks);
+	console.log(tracks, kostil, 777777777777);
 
 	useEffect(() => {
 		peerConnection?.addEventListener('track', ({ streams, track }) => {
@@ -16,35 +16,32 @@ const useRTCStream = (tracks: string[], screenCapture?: string) => {
 				tracks.push(track.id);
 			}
 
-			const mediaStream = new MediaStream();
+			if (kostil) {
+				console.log(stream, screenCapture, 'KOSTILLLLLLLLLLLLLLLLLLLLL');
 
-			tracks.forEach((trackId: string) => {
-				console.log(trackId, 222222);
-				const userTrack = stream.getTrackById(trackId);
-				console.log(userTrack, 100100);
+				if (stream.id === screenCapture) {
+					setScreenTrackId(track.id);
+					setRtcStream(stream);
 
-
-				if (userTrack) {
-					console.log(userTrack);
-
-					console.log(stream.id, screenCapture);
-
-					if (screenCapture && stream.id === screenCapture) {
-						setScreenTrackId(track.id);
-
-						mediaStream.addTrack(userTrack);
-						return;
-					}
-
-					mediaStream.addTrack(userTrack);
+					return;
 				}
-			});
 
-			console.log(mediaStream, 44444444);
+				setRtcStream(rtcStream);
 
-			setRtcStream(mediaStream);
+				return;
+			}
+
+			if (stream.id !== screenCapture) {
+				setRtcStream(stream);
+
+				return;
+			}
+
+			setRtcStream(rtcStream);
 		});
-	}, [tracks, peerConnection]);
+	}, [tracks, peerConnection, screenCapture, kostil]);
+
+	console.log(rtcStream);
 
 	return [rtcStream, screenTrackId];
 };

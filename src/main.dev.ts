@@ -53,6 +53,7 @@ if (
 // 	const y = height * Math.sin((twoPI * x) / width) + height;
 // 	console.log(robot.mouseClick('left'));
 // }
+app.allowRendererProcessReuse = false;
 
 const installExtensions = async () => {
 	const installer = require('electron-devtools-installer');

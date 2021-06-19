@@ -28,6 +28,7 @@ type PropTypes = {
 	nickname: string;
 	screenShareTrack?: string;
 	onClickScreenShare: (screenTrack: any) => void;
+	screenCaptureStream: string;
 };
 
 type ConnectionState =
@@ -43,6 +44,7 @@ const RoomMember = ({
 	nickname,
 	screenShareTrack,
 	onClickScreenShare,
+	screenCaptureStream,
 }: PropTypes) => {
 	console.log(nickname);
 	const classes = useRoomMemberStyles();
@@ -79,7 +81,12 @@ const RoomMember = ({
 								left: '15px',
 								bottom: '15px',
 							}}
-							onClick={onClickScreenShare}
+							onClick={() =>
+								onClickScreenShare(
+									screenShareTrack,
+									screenCaptureStream,
+								)
+							}
 						>
 							<ScreenShareTwoTone />
 						</IconButton>

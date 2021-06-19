@@ -35,9 +35,9 @@ const RoomMemberDecorator = ({
 		console.log(stream.getTracks(), tracks);
 
 		stream.getTracks().forEach((track) => {
-			if (track.id === screenTrackId) {
-				console.log(track);
-				stream.removeTrack(track);
+			if (stream.id === screenCaptureStream) {
+				// console.log(track);
+				// stream.removeTrack(track);
 				setScreenShareTrack(track.id);
 			}
 		});
@@ -52,6 +52,7 @@ const RoomMemberDecorator = ({
 				stream={stream}
 				screenShareTrack={screenShareTrack}
 				onClickScreenShare={onClickScreenShare}
+				screenCaptureStream={screenCaptureStream}
 			/>
 		</>
 	);

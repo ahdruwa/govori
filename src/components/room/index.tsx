@@ -13,6 +13,7 @@ import useLocalStream from '../../hooks/socket/useLocalStream';
 import useRTCStream from '../../hooks/socket/useRTCStream';
 import useScreenCapture from '../../hooks/socket/useScreenCapture';
 import useUsers from '../../hooks/socket/useUsers';
+import useRemoteDescktopListener from '../../hooks/useRemoteDescktopListener';
 import { WebSocketContext } from '../../websocket-context';
 import Controls from './controls';
 import SelectScreenDialog from './dialogs/select-sreen-dialog';
@@ -26,13 +27,15 @@ const Room = () => {
 	const { socket, peerConnection } = useContext(WebSocketContext);
 
 	const [users, getUsersList] = useUsers<any[]>();
-	const { roomId } = useParams();
+	const { roomId } = useParams<{ roomId: string }>();
+	useRemoteDescktopListener();
 
 	const [needVideo, setNeedVideo] = useState(false);
 	const [needAudio, setNeedAudio] = useState(true);
 	const [isOpenDialog, setIsOpenDialog] = useState(false);
 	const [screenParams, setScreenParams] = useState('');
 	const [screenShareTrack, setScreenShareTrack] = useState('');
+	const [screenStream, setScreenStream] = useState('');
 	const [isOpenVideoPopup, setisOpenVideoPopup] = useState(false);
 
 	const userOptions = useMemo(
@@ -49,9 +52,11 @@ const Room = () => {
 		setScreenParams(screenId);
 	}, []);
 
-	const handleScreenShare = useCallback((screenTrack) => {
+	const handleScreenShare = useCallback((screenTrack, screenStreamId) => {
 		setisOpenVideoPopup(true);
 		setScreenShareTrack(screenTrack);
+		setScreenStream(screenStreamId);
+		console.log(screenTrack, screenStreamId, 2222228888888888);
 	}, []);
 
 	// peerConnection.ontrack = () => console.log(101010);
@@ -74,7 +79,9 @@ const Room = () => {
 						}
 					/>
 					{users.map((user: any) => {
-						console.log(user.tracks, 'UNDEFINED?');
+						if (user.screenCast && !screenStream) {
+							setScreenStream(user.screenCast);
+						}
 
 						return (
 							<RoomMemberDecorator
@@ -89,7 +96,7 @@ const Room = () => {
 					})}
 					<VideoPopup
 						open={isOpenVideoPopup}
-						track={screenShareTrack}
+						streamId={screenStream}
 					/>
 				</RoomVideoGrid>
 				<Grid item xs={12}>
