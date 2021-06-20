@@ -78,7 +78,7 @@ const Room = () => {
 				track.stop();
 			});
 		};
-	}, [localVideo]);
+	}, []);
 
 	// peerConnection.ontrack = () => console.log(101010);
 	const nickname: string = localStorage.getItem('nickname') || 'nickname';

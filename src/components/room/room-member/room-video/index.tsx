@@ -18,6 +18,12 @@ const RoomVideo = ({ stream, muted, isNeedVideo }: Props) => {
 		if (videoRef.current && stream) {
 			videoRef.current.srcObject = stream;
 		}
+
+		return () => {
+			stream?.getTracks().forEach((track) => {
+				track.stop();
+			});
+		};
 	}, [stream]);
 
 	return (
@@ -26,7 +32,6 @@ const RoomVideo = ({ stream, muted, isNeedVideo }: Props) => {
 			ref={videoRef}
 			autoPlay
 			muted={muted}
-			onClick={(e) => console.log(e)}
 		/>
 	);
 };

@@ -32,7 +32,7 @@ const WebSocketContextProvider = ({ children }: Props) => {
 			peerConnection,
 			dataChannel: peerConnection.createDataChannel('ConnectionState'),
 		}),
-		[peerConnection]
+		[]
 	);
 
 	useEffect(() => {

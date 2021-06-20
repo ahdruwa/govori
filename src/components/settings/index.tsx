@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { ChangeEvent, ChangeEventHandler, useState } from 'react';
 import { Button, Grid, Input } from '@material-ui/core';
 import { useHistory } from 'react-router';
 
@@ -7,7 +7,9 @@ const Settings = () => {
 	const [name, setName] = useState<string>(initialName);
 	const history = useHistory();
 
-	const handleChangeName = (e: InputEvent) => {
+	const handleChangeName: ChangeEventHandler = (
+		e: ChangeEvent<HTMLInputElement>
+	) => {
 		const evenTarget: HTMLInputElement = e.target;
 		const { value } = evenTarget;
 
