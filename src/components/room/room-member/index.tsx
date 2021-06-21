@@ -34,6 +34,7 @@ type PropTypes = {
 	) => void;
 	screenCaptureStream: string;
 	userId: string;
+	isNeedVideo: boolean;
 };
 
 type ConnectionState =
@@ -51,11 +52,10 @@ const RoomMember = ({
 	onClickScreenShare,
 	screenCaptureStream,
 	userId,
+	isNeedVideo,
 }: PropTypes) => {
 	console.log(nickname);
 	const classes = useRoomMemberStyles();
-
-	const isNeedVideo = !!stream?.getVideoTracks().length;
 
 	const connectionStateClass: ConnectionState = `room-nicknameContainer__${connectionState}`;
 

@@ -51,6 +51,7 @@ const RoomMemberDecorator = ({
 				onClickScreenShare={onClickScreenShare}
 				screenCaptureStream={screenCaptureStream}
 				userId={userId}
+				isNeedVideo={stream.getTracks().length}
 			/>
 		</>
 	);

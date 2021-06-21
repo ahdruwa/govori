@@ -100,6 +100,7 @@ const Room = () => {
 						key={localVideo.id}
 						nickname={nickname}
 						connectionState={connectionState || 'new'}
+						isNeedVideo={needVideo}
 					/>
 					{users.map((user: any) => {
 						if (user.screenCast && !screenStream) {
