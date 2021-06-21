@@ -14,9 +14,10 @@ type PropTypes = {
 	streamId: string;
 	open: boolean;
 	userId: string;
+	onClose: () => void;
 };
 
-const VideoPopup = ({ streamId, open, userId }: PropTypes) => {
+const VideoPopup = ({ streamId, open, userId, onClose }: PropTypes) => {
 	const videoRef = useRef<HTMLVideoElement>(null);
 	const [screenParams, setScreenParams] =
 		useState<{ height: number; width: number }>();
@@ -101,7 +102,7 @@ const VideoPopup = ({ streamId, open, userId }: PropTypes) => {
 	);
 
 	return (
-		<Dialog maxWidth={false} open={open}>
+		<Dialog maxWidth={false} open={open} onBackdropClick={onClose}>
 			<video
 				autoPlay
 				onClick={handleClick}

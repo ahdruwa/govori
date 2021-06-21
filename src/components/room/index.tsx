@@ -22,8 +22,10 @@ import RoomMemberDecorator from './room-member/decorator';
 import RoomVideoGrid from './room-video-grid';
 import VideoPopup from './video-popup';
 
+const streams: any[] = [];
+
 const Room = () => {
-	const [users, getUsersList] = useUsers<any[]>();
+	const [users, getUsersList] = useUsers();
 	const { roomId } = useParams<{ roomId: string }>();
 	const { peerConnection } = useContext(WebSocketContext);
 
@@ -69,13 +71,15 @@ const Room = () => {
 	);
 
 	useEffect(() => {
+		streams.push(localVideo, screenCaptureStream);
+	}, [localVideo, screenCaptureStream]);
+
+	useEffect(() => {
 		return () => {
-			peerConnection?.close();
-			localVideo.getTracks().forEach((track) => {
-				track.stop();
-			});
-			screenCaptureStream.getTracks().forEach((track) => {
-				track.stop();
+			streams.forEach((stream) => {
+				stream.getTracks().forEach((track: any) => {
+					track.stop();
+				});
 			});
 		};
 	}, []);
@@ -118,6 +122,9 @@ const Room = () => {
 						open={isOpenVideoPopup}
 						streamId={screenStream}
 						userId={screenCaster}
+						onClose={() => {
+							setisOpenVideoPopup(false);
+						}}
 					/>
 				</RoomVideoGrid>
 				<Grid item xs={12}>

@@ -19,11 +19,11 @@ const RoomVideo = ({ stream, muted, isNeedVideo }: Props) => {
 			videoRef.current.srcObject = stream;
 		}
 
-		return () => {
-			stream?.getTracks().forEach((track) => {
-				track.stop();
-			});
-		};
+		// return () => {
+		// 	stream?.getTracks().forEach((track) => {
+		// 		track.stop();
+		// 	});
+		// };
 	}, [stream]);
 
 	return (
