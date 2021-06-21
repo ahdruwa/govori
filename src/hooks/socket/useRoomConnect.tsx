@@ -5,14 +5,17 @@ import { WebSocketContext } from '../../websocket-context';
 const roomConnectAcceptedListener = (
 	socket: SocketIOClient.Socket,
 	peerConnection: RTCPeerConnection,
-	onAccept: () => void
+	onAccept: (e: Error) => void
 ) => {
 	socket.on('room-connect--accepted', async ({ answer, roomId }) => {
 		await peerConnection.setRemoteDescription(
 			new RTCSessionDescription(answer)
 		);
 
-		onAccept();
+		onAccept(null);
+	});
+	socket.on('connection-error', () => {
+		onAccept(new Error('Неправильный номер комнаты'));
 	});
 };
 
@@ -38,6 +41,7 @@ const connectRoom = async (
 const useConnectRoom = (roomId: string) => {
 	const { socket, peerConnection } = useContext(WebSocketContext);
 	const history = useHistory();
+	const [error, setError] = useState<Error>(null);
 
 	const roomConnect = () => {
 		const nickname = localStorage.getItem('nickname');
@@ -50,14 +54,18 @@ const useConnectRoom = (roomId: string) => {
 			throw new Error('miss context');
 		}
 
-		roomConnectAcceptedListener(socket, peerConnection, () => {
-			history.push(`/room/${roomId}`);
+		roomConnectAcceptedListener(socket, peerConnection, (error: Error) => {
+			if (!error) {
+				return history.push(`/room/${roomId}`);
+			}
+
+			return setError(error);
 		});
 
 		connectRoom(nickname, roomId, socket, peerConnection);
 	};
 
-	return roomConnect;
+	return [error, roomConnect];
 };
 
 export default useConnectRoom;

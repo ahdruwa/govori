@@ -12,7 +12,7 @@ import useConnectRoom from '../../hooks/socket/useRoomConnect';
 
 const RoomPicker = () => {
 	const [roomId, setRoomId] = useState('');
-	const connectRoom = useConnectRoom(roomId);
+	const [connectionError, connectRoom] = useConnectRoom(roomId);
 	const [connectRoomError, setConnectRoomError] = useState<string>('');
 	const history = useHistory();
 
@@ -48,9 +48,11 @@ const RoomPicker = () => {
 			<Grid item>
 				<Button onClick={() => history.push('/')}>Назад</Button>
 			</Grid>
-			{connectRoomError && (
+			{(connectRoomError || connectionError) && (
 				<Paper>
-					<Typography color="primary">{connectRoomError}</Typography>
+					<Typography color="primary">
+						{connectRoomError || connectionError}
+					</Typography>
 				</Paper>
 			)}
 		</Grid>

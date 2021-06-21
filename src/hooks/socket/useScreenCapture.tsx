@@ -19,8 +19,8 @@ const useScreenCapture: (screenId: string) => [Error | undefined, MediaStream] =
 						mandatory: {
 							chromeMediaSource: 'desktop',
 							chromeMediaSourceId: screenId,
-							maxWidth: 1920,
-							maxHeight: 1080,
+							maxWidth: 2160,
+							maxHeight: 1440,
 						},
 					},
 				})
