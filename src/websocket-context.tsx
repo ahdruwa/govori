@@ -28,7 +28,7 @@ const WebSocketContextProvider = ({ children }: Props) => {
 	);
 	const ws = useMemo(
 		() => ({
-			socket: io('ws://10.185.228.179:3000/signalization'),
+			socket: io('ws://192.168.0.105:3000/signalization'),
 			peerConnection,
 			dataChannel: peerConnection.createDataChannel('ConnectionState'),
 		}),
